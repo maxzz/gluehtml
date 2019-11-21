@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+      "dev": "webpack -w"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3"
+  },
+  "devDependencies": {
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2"
   }
 }
