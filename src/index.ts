@@ -6,18 +6,40 @@ import minimist from 'minimist';
 // let $ = cheerio.load('<a></a>');
 // console.log($.html());
 
-function parseHtmlContent(orgHtml: string) {
-    let $ = cheerio.load(orgHtml);
+function parseHtmlContent(htmlString: string) {
+    let $ = cheerio.load(htmlString);
 
     let rv = {
         links: [],
         scripts: []
     }
 
-    $('link').each((index, el) => rv.links.push(path.normalize(el.attribs.href)));
-    $('script').each((index, el) => rv.scripts.push(path.normalize(el.attribs.src)));
+    $('link').each((index, el) => rv.links.push({ url: el.attribs.href }));
+    $('script').each((index, el) => rv.scripts.push({ url: el.attribs.src }));
 
     return rv;
+}
+
+function createSolidHtmlContent(filename: string): string {
+
+    let parent = path.dirname(path.resolve(filename));
+
+    let htmlString = fs.readFileSync(filename).toString();
+    let externals = parseHtmlContent(htmlString);
+    
+    [...externals.links, ...externals.scripts].forEach(item => {
+        try {
+            let fname = path.join(parent, item.url);
+
+            item.cnt = fs.readFileSync(fname).toString();
+        } catch (err) {
+            console.log(`Failed to read: '${item.url}'`, err);
+        }
+    });
+
+    console.log(externals);
+
+    return '';
 }
 
 function main() {
@@ -28,6 +50,8 @@ function main() {
         if (fs.statSync(name).isDirectory()) {
         }
         else {
+            let newCnt = createSolidHtmlContent(name);
+            console.log(newCnt);
         }
     }
     catch (err) {
@@ -35,7 +59,6 @@ function main() {
     }
 }
 
-console.log(parseHtmlContent('<a></a>'));
 main();
 console.log('done5');
 
