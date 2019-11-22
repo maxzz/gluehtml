@@ -7,15 +7,19 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
     // 1. Parse HTML
     let $ = cheerio.load(htmlString);
 
+    const tagSTYLE = 'style';
+    const tagSCRIPT = 'script';
+
     let externals = {
         links: [],
         scripts: []
     }
-    $('link').each((index, el) => el.attribs.href && externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel }));
-    $('script').each((index, el) => el.attribs.src && externals.scripts.push({ url: el.attribs.src, el: el }));
+    $('link').each((index, el) => el.attribs.href && externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel, tag: tagSTYLE }));
+    $('script').each((index, el) => el.attribs.src && externals.scripts.push({ url: el.attribs.src, el: el, tag: tagSCRIPT }));
 
     // 2. Load the content of externals
-    [...externals.links, ...externals.scripts].forEach(item => {
+    let files = [...externals.links, ...externals.scripts];
+    files.forEach(item => {
         try {
             if (!item.rel || ~item.rel.trim().toLowerCase().indexOf('stylesheet')) { // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
                 item.cnt = fs.readFileSync(path.join(rootDir, item.url)).toString();
@@ -26,13 +30,7 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
     });
 
     // 3. Update elements
-    externals.links.forEach(item => {
-        item.cnt && $(item.el).replaceWith(`\n<style>\n${item.cnt}\n</style>\n`);
-    });
-
-    externals.scripts.forEach(item => {
-        item.cnt && $(item.el).replaceWith(`\n<script>\n${item.cnt}\n</script>\n`);
-    });
+    files.forEach(item => item.cnt && $(item.el).replaceWith(`\n<${item.tag}>\n${item.cnt}\n</${item.tag}>\n`));
 
     return $.html();
 }
