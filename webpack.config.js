@@ -20,5 +20,6 @@ module.exports = env => {
         },
         devtool: 'source-map',
         mode: 'development',
+        target: 'node',
     };
 };

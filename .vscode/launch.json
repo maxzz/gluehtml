@@ -11,7 +11,10 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\dist\\build.js"
+            "program": "${workspaceFolder}\\dist\\build.js",
+            "args": [
+                "--file", "./test/1/index.html"
+            ]
         }
     ]
 }
