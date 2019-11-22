@@ -4,13 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-      "dev": "webpack -w --env.ImHere",
-      "build": "webpack --env.ImBuild"
+    "dev": "webpack -w --env.ImHere",
+    "build": "webpack --env.ImBuild"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.14",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2"
   }
