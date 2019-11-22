@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-      "dev": "webpack -w"
+      "dev": "webpack -w --env.ImHere",
+      "build": "webpack --env.ImBuild"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3"
