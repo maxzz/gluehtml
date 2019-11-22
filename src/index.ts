@@ -10,15 +10,11 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
     const tagSTYLE = 'style';
     const tagSCRIPT = 'script';
 
-    let externals = {
-        links: [],
-        scripts: []
-    }
-    $('link').each((index, el) => el.attribs.href && externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel, tag: tagSTYLE }));
-    $('script').each((index, el) => el.attribs.src && externals.scripts.push({ url: el.attribs.src, el: el, tag: tagSCRIPT }));
+    let files = [];
+    $('link').each((idx, el) => el.attribs.href && files.push({ url: el.attribs.href, el: el, rel: el.attribs.rel, tag: tagSTYLE }));
+    $('script').each((idx, el) => el.attribs.src && files.push({ url: el.attribs.src, el: el, tag: tagSCRIPT }));
 
     // 2. Load the content of externals
-    let files = [...externals.links, ...externals.scripts];
     files.forEach(item => {
         try {
             if (!item.rel || ~item.rel.trim().toLowerCase().indexOf('stylesheet')) { // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
@@ -35,6 +31,8 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
     return $.html();
 }
 
+let SUFFIX = '--single';
+
 function createSolidHtml(filename: string): void {
     filename = path.resolve(filename);
     let rootDir = path.dirname(filename);
@@ -45,8 +43,6 @@ function createSolidHtml(filename: string): void {
     let dest = path.join(rootDir, `${path.basename(filename, '.html')}${SUFFIX}${path.extname(filename)}`);
     fs.writeFileSync(dest, newCnt);
 }
-
-var SUFFIX = '--single';
 
 function main() {
     const args = minimist(process.argv.slice(2));
