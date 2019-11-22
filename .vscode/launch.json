@@ -13,7 +13,7 @@
             ],
             "program": "${workspaceFolder}\\dist\\build.js",
             "args": [
-                "--file", "./test/1/index.html"
+                "--file", "./test/2/index.html"
             ]
         }
     ]

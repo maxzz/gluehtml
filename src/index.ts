@@ -3,43 +3,43 @@ import path from 'path';
 import fs from 'fs-extra';
 import minimist from 'minimist';
 
-// let $ = cheerio.load('<a></a>');
-// console.log($.html());
+function createSolidHtmlContent(filename: string): string {
 
-function parseHtmlContent(htmlString: string) {
+    let htmlString = fs.readFileSync(filename).toString();
+
+    // 1. Parse HTML
     let $ = cheerio.load(htmlString);
 
-    let rv = {
+    let externals = {
         links: [],
         scripts: []
     }
+    $('link').each((index, el) => externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel }));
+    $('script').each((index, el) => externals.scripts.push({ url: el.attribs.src, el: el }));
 
-    $('link').each((index, el) => rv.links.push({ url: el.attribs.href }));
-    $('script').each((index, el) => rv.scripts.push({ url: el.attribs.src }));
-
-    return rv;
-}
-
-function createSolidHtmlContent(filename: string): string {
-
-    let parent = path.dirname(path.resolve(filename));
-
-    let htmlString = fs.readFileSync(filename).toString();
-    let externals = parseHtmlContent(htmlString);
+    // 2. Load the content of externals
+    let parent = path.dirname(filename);
     
     [...externals.links, ...externals.scripts].forEach(item => {
         try {
-            let fname = path.join(parent, item.url);
-
-            item.cnt = fs.readFileSync(fname).toString();
+            if (!item.rel || item.rel.trim().indexOf('stylesheet') !== -1) { // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
+                item.cnt = fs.readFileSync(path.join(parent, item.url)).toString();
+            }
         } catch (err) {
             console.log(`Failed to read: '${item.url}'`, err);
         }
     });
 
-    console.log(externals);
+    // 3. Update elements
+    externals.links.forEach(item => {
+        item.cnt && $(item.el).replaceWith(`\n<style>\n${item.cnt}\n</style>\n`);
+    });
 
-    return '';
+    externals.scripts.forEach(item => {
+        item.cnt && $(item.el).replaceWith(`\n<script>\n${item.cnt}\n</script>\n`);
+    });
+
+    return $.html();
 }
 
 function main() {
@@ -50,8 +50,11 @@ function main() {
         if (fs.statSync(name).isDirectory()) {
         }
         else {
+            name = path.resolve(name);
             let newCnt = createSolidHtmlContent(name);
-            console.log(newCnt);
+            
+            let dest = path.join(path.dirname(name), path.basename(name) + '-single' + path.extname(name));
+            fs.writeFileSync(dest, newCnt);
         }
     }
     catch (err) {
