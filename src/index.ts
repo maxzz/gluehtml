@@ -11,8 +11,8 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
         links: [],
         scripts: []
     }
-    $('link').each((index, el) => externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel }));
-    $('script').each((index, el) => externals.scripts.push({ url: el.attribs.src, el: el }));
+    $('link').each((index, el) => el.attribs.href && externals.links.push({ url: el.attribs.href, el: el, rel: el.attribs.rel }));
+    $('script').each((index, el) => el.attribs.src && externals.scripts.push({ url: el.attribs.src, el: el }));
 
     // 2. Load the content of externals
     [...externals.links, ...externals.scripts].forEach(item => {
@@ -44,8 +44,6 @@ function createSolidHtml(filename: string): void {
     let htmlString = fs.readFileSync(filename).toString();
     let newCnt = createSolidHtmlContent(rootDir, htmlString);
 
-    console.log(path.basename(filename, '.html'));
-    
     let dest = path.join(rootDir, `${path.basename(filename, '.html')}${SUFFIX}${path.extname(filename)}`);
     fs.writeFileSync(dest, newCnt);
 }
@@ -68,7 +66,7 @@ function main() {
         if (fs.statSync(name).isDirectory()) {
             let dir = fs.readdirSync(name);
             let names = dir
-                .filter(_ => path.extname(_) === '.html' && !~_.toLowerCase().indexOf(SUFFIX))
+                .filter(_ => path.extname(_) === '.html' && !~_.indexOf(SUFFIX))
                 .map(_ => path.join(name, _));
             names.forEach(createSolidHtml);
             names || console.log(`No HTML files found in "${name}"`);
