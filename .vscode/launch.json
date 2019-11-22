@@ -13,7 +13,9 @@
             ],
             "program": "${workspaceFolder}\\dist\\build.js",
             "args": [
-                "--file", "./test/2/index.html"
+                //"--path", "./test/2/"
+                //"--path", "./test/2/index.html"
+                "./test/2/", "--suffix", "_COMBINED"
             ]
         }
     ]
