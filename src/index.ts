@@ -11,22 +11,33 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
     const tagSCRIPT = 'script';
 
     let files = [];
-    $('link').each((idx, el) => el.attribs.href && files.push({ url: el.attribs.href, el: el, rel: el.attribs.rel, tag: tagSTYLE }));
-    $('script').each((idx, el) => el.attribs.src && files.push({ url: el.attribs.src, el: el, tag: tagSCRIPT }));
+    $('link').each((idx, el) => el.attribs.href && files.push({ el: el, url: el.attribs.href, tag: tagSTYLE, rel: el.attribs.rel }));
+    $('script').each((idx, el) => el.attribs.src && files.push({ el: el, url: el.attribs.src, tag: tagSCRIPT }));
 
-    // 2. Load the content of externals
-    files.forEach(item => {
+    // 2. Load the content of externals relative to the HTML file location (server locations are ignored).
+    files.forEach(_ => {
         try {
-            if (!item.rel || ~item.rel.trim().toLowerCase().indexOf('stylesheet')) { // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
-                item.cnt = fs.readFileSync(path.join(rootDir, item.url)).toString();
+            if (!_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet')) { // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
+                _.cnt = fs.readFileSync(path.join(rootDir, _.url)).toString();
             }
         } catch (err) {
-            console.log(`Failed to read: '${item.url}'`, err);
+            console.log(`Failed to read: '${_.url}'`, err);
         }
     });
 
     // 3. Update elements
-    files.forEach(item => item.cnt && $(item.el).replaceWith(`\n<${item.tag}>\n${item.cnt}\n</${item.tag}>\n`));
+    files.forEach(_ => _.cnt && $(_.el).replaceWith(`\n<${_.tag}>\n${_.cnt}\n</${_.tag}>\n`));
+
+    // 4. Try to embed favicon
+    let iconEl = files.find(_ => _.rel && ~_.rel.indexOf('icon'));
+    try {
+        let buf = fs.readFileSync(path.join(rootDir, iconEl.url));
+        let b64 = `data:image/png;base64,${buf.toString('base64')}`;
+        let el = `<link rel="shortcut icon" type="image/x-icon" href="${b64}"></link>`;
+        $(iconEl.el).replaceWith(el);
+    } catch(err) {
+        console.log(`Cnnnot load favicon: '${iconEl.url}'`, err);
+    }
 
     return $.html();
 }
