@@ -8,7 +8,7 @@ module.exports = env => {
         entry: './src/index.ts',
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'build.js'
+            filename: 'html-single.js'
         },
         module: {
             rules: [
