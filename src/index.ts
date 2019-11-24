@@ -23,7 +23,7 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
             let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
             isLocal && (isLocal = !_.url.match(/^https?/));
             if (isLocal) {
-                _.cnt = fs.readFileSync(path.join(rootDir, _.url)).toString();
+                _.cnt = stripBOM(fs.readFileSync(path.join(rootDir, _.url)).toString());
             }
         } catch (err) {
             console.log(`Failed to read: '${_.url}'`, err);
@@ -54,11 +54,18 @@ function createSolidHtmlContent(rootDir: string, htmlString: string): string {
 
 let SUFFIX = '--single';
 
+function stripBOM(content: string): string {
+    // Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+    // because the buffer-to-string conversion in `fs.readFileSync()`
+    // translates it to FEFF, the UTF-16 BOM.
+    return content.charCodeAt(0) === 0xFEFF ? content.slice(1) : content;
+}
+
 function createSolidHtml(filename: string): void {
     filename = path.resolve(filename);
     let rootDir = path.dirname(filename);
 
-    let htmlString = fs.readFileSync(filename).toString();
+    let htmlString = stripBOM(fs.readFileSync(filename).toString());
     let newCnt = createSolidHtmlContent(rootDir, htmlString);
 
     let dest = path.join(rootDir, `${path.basename(filename, '.html')}${SUFFIX}${path.extname(filename)}`);
