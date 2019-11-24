@@ -16,8 +16,9 @@
                 //"--path", "./test/2/"
                 //"--path", "./test/2/index.html"
                 //"./test/2/", "--suffix", "_COMBINED"
-                "--path", "./test/3/index.html", "--deffavicon", "false"
+                //"--path", "./test/3/index.html", "--deffavicon", "false"
                 //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change"
+                "./test/4"
             ]
         }
     ]
