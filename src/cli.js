@@ -1,2 +1,5 @@
 #!/usr/bin/env node
-require('./index.js').main();
+const path = require('path');
+const main = path.join(path.dirname(process.argv[1]), './index.js');
+
+require(main).main();
