@@ -5,32 +5,28 @@
     "bin": "dist/cli.js",
     "license": "MIT",
     "scripts": {
-        "dev": "webpack -w --env.ImHere",
-        "buildw": "webpack --env.ImBuild",
-        "buildr": "parcel build src/index.ts --target node --bundle-node-modules --no-source-maps",
-        "buildc": "parcel build src/main.ts --target node --bundle-node-modules --no-source-maps",
-        "buildr3": "parcel build src/index.ts --target node --bundle-node-modules --no-minify",
-        "build": "rm -rf dist && yarn buildc && cp src/cli.js dist"
+        "dev": "parcel build src/index.ts --target node --bundle-node-modules --no-minify",
+        "build-ts": "parcel build src/index.ts --target node --bundle-node-modules --no-source-maps",
+        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
-        "@types/fs-extra": "^8.0.1",
         "@types/cheerio": "^0.22.14",
+        "@types/fs-extra": "^8.0.1",
         "@types/minimist": "^1.2.0",
         "@types/node": "^12.12.11",
         "cheerio": "^1.0.0-rc.3",
         "fs-extra": "^8.1.0",
-        "minimist": "^1.2.0",
+        "minimist": "^1.2.5",
         "ts-loader": "^6.2.1",
         "typescript": "^3.7.2"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/vitejs/create-vite-app.git"
+        "url": "git+git@github.com:maxzz/gluehtml.git"
     },
     "bugs": {
-        "url": "https://github.com/vitejs/create-vite-app/issues"
+        "url": "git@github.com:maxzz/gluehtml/issues"
     },
-    "homepage": "https://github.com/vitejs/create-vite-app/tree/master/#readme"
+    "homepage": "git@github.com:maxzz/gluehtml/tree/master/#readme"
 }
