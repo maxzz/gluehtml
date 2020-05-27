@@ -1,12 +1,15 @@
 {
     "name": "gluehtml",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "license": "MIT",
+    "author": "Max Zakharzhevskiy",
+    "description": "Glue HTML local external files into solid HTML",
     "main": "dist/cli.js",
     "bin": "dist/cli.js",
     "files": [
         "dist/**.*"
     ],
+    "keywords": [ "HTML", "single", "page" ],
     "scripts": {
         "dev": "parcel build src/index.ts --target node --bundle-node-modules --no-minify",
         "build-ts": "parcel build src/index.ts --target node --bundle-node-modules --no-source-maps",
@@ -27,10 +30,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+git@github.com:maxzz/gluehtml.git"
+        "url": "https://github.com/maxzz/gluehtml"
     },
     "bugs": {
-        "url": "git@github.com:maxzz/gluehtml/issues"
+        "url": "https://github.com/maxzz/gluehtml/issues"
     },
-    "homepage": "git@github.com:maxzz/gluehtml/tree/master/#readme"
+    "homepage": "https://github.com/maxzz/gluehtml/tree/master/#readme"
 }

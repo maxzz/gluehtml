@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Password Change Test</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <script type="text/x-template" id="test-template">
+            <div class="form-root">
+                <span class="label">{{formLabel}}</span>
+                <form class="pc-form">
+                    <div class="form-username"></div>
+                    <div class="form-fields"></div>
+                    <div class="pc__buttons">
+                        <div>
+                            <button @click.prevent="clearValues">Clear</button>
+                            <button @click.prevent="fillValues">Fill-in</button>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label><input type="checkbox" v-model="opt_hasUsername"> Add username field</label>
+                        <label><input type="checkbox" v-model="opt_hasLogin"> Form has corresponding login</label>
+                        <label><input type="checkbox" v-model="opt_fillInvalid"> Fill-in with invalid credentials</label>
+                    </div>
+                </form>
+            </div>
+        </script>
+    
+        <div id="app">
+            <!-- <form class="pc-form" data-form-name="login">
+                <input type="text" placeholder="username">
+                <input type="password" placeholder="password">
+                <div class="pc__buttons">
+                    <button>Fill values</button>
+                    <button>Clear values</button>
+                </div>
+            </form> -->
+
+            <test-form data-form-id="formA"></test-form>
+            <test-form data-form-id="formB"></test-form>
+            <test-form data-form-id="formC"></test-form>
+
+            <!-- <button v-on:click="eventParent">Clique me to emit from parent component</button>
+            <br />
+            <child v-on:event_child="eventChild"></child> -->
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="./src/index.js"></script>
+    </body>
+</html>
