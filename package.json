@@ -1,13 +1,17 @@
 {
     "name": "gluehtml",
-    "version": "0.1.0",
+    "version": "0.1.1",
+    "license": "MIT",
     "main": "dist/cli.js",
     "bin": "dist/cli.js",
-    "license": "MIT",
+    "files": [
+        "dist/**.*"
+    ],
     "scripts": {
         "dev": "parcel build src/index.ts --target node --bundle-node-modules --no-minify",
         "build-ts": "parcel build src/index.ts --target node --bundle-node-modules --no-source-maps",
-        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist"
+        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
+        "prepublish": "yarn build"
     },
     "dependencies": {},
     "devDependencies": {
