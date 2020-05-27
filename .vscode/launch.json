@@ -13,12 +13,12 @@
             ],
             "program": "${workspaceFolder}\\dist\\html-single.js",
             "args": [
-                //"--path", "./test/2/"
-                //"--path", "./test/2/index.html"
-                //"./test/2/", "--suffix", "_COMBINED"
-                //"--path", "./test/3/index.html", "--deffavicon", "false"
+                //"--path", "./tests/2/"
+                //"--path", "./tests/2/index.html"
+                //"./tests/2/", "--suffix", "_COMBINED"
+                //"--path", "./tests/3/index.html", "--deffavicon", "false"
                 //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change"
-                "./test/4"
+                "./tests/4"
             ]
         }
     ]
