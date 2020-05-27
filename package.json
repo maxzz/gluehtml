@@ -1,6 +1,6 @@
 {
     "name": "gluehtml",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "license": "MIT",
     "author": "Max Zakharzhevskiy",
     "description": "Glue HTML local external files into solid HTML",
@@ -15,8 +15,8 @@
         "page"
     ],
     "scripts": {
-        "dev": "parcel build src/index.ts --target node --bundle-node-modules --no-minify",
-        "build-ts": "parcel build src/index.ts --target node --bundle-node-modules --no-source-maps",
+        "dev": "parcel build src/index.ts --target node --no-minify",
+        "build-ts": "parcel build src/main.ts --target node --bundle-node-modules --no-source-maps",
         "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
         "prepublish": "yarn build"
     },
