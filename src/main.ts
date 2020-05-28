@@ -14,7 +14,7 @@ namespace Content {
         return content.charCodeAt(0) === 0xFEFF ? content.slice(1) : content;
     }
     
-    export function createSolidHtmlContent(rootDir: string, filename: string, addMissingFavicon: boolean): string {
+    export function createSolidHtmlContent(rootDir: string, filename: string, addMissingFavicon: boolean, replace: ReplacePair[]): string {
         // 1. Parse HTML
         let htmlAsStr = stripBOM(fs.readFileSync(filename).toString());
         let $ = cheerio.load(htmlAsStr);
@@ -30,10 +30,10 @@ namespace Content {
             cnt?: string;
         }
         
-        let files: Item[] = [];
+        const allFiles: Item[] = [];
     
         $('link').each((idx: number, el: CheerioElement) => {
-            el.attribs.href && files.push({
+            el.attribs.href && allFiles.push({
                 el: el,
                 url: el.attribs.href,
                 htmlTag: tagSTYLE,
@@ -42,42 +42,52 @@ namespace Content {
         });
         
         $('script').each((idx: number, el: CheerioElement) => {
-            el.attribs.src && files.push({
+            el.attribs.src && allFiles.push({
                 el: el,
                 url: el.attribs.src,
                 htmlTag: tagSCRIPT
             });
         });
+
+        // 2. Skip remote files
+        let files = allFiles.filter((_: Item) => {
+            let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
+            isLocal && (isLocal = !_.url.match(/^https?|^data:/));
+            return isLocal;
+        });
+
+        console.log(chalk.green(`File ${filename}`));
+        console.log(chalk.green(`  Local links ${files.length} of ${allFiles.length} total`));
+
+        // 3. Remap files
+        files.forEach((_: Item) => {
+            //replace
+        });
     
-        console.log(chalk.green(`Total links ${files.length} in file ${filename}`));
-    
-        // 2. Load the content of externals relative to the HTML file location (server locations are ignored).
+        // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
         files.forEach((_: Item) => {
             try {
-                let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon'; handle =stylesheet and ="stylesheet"
-                isLocal && (isLocal = !_.url.match(/^https?|^data:/));
-                if (isLocal) {
-                    const fname = path.join(rootDir, _.url);
-                    console.log(chalk.gray(`  Processing: ${fname}`));
-                    if (fs.existsSync(fname)) {
-                        _.cnt = stripBOM(fs.readFileSync(fname).toString());
-                    } else {
-                        console.log(chalk.yellow(`     Missing: ${fname}`));
-                    }
+                const fname = path.join(rootDir, _.url);
+                console.log(chalk.gray(`  Processing: ${fname}`));
+
+                if (fs.existsSync(fname)) {
+                    _.cnt = stripBOM(fs.readFileSync(fname).toString());
+                } else {
+                    console.log(chalk.yellow(`     Missing: ${fname}`));
                 }
             } catch (error) {
                 console.log(chalk.red(`  Failed to read: '${_.url}'\n   ${error}`));
             }
         });
     
-        // 3. Replace links with content.
+        // 5. Replace links with content.
         files.forEach((_: Item) => {
             if (_.cnt) {
                 $(_.el).replaceWith(`\n<${_.htmlTag}>\n${_.cnt}\n</${_.htmlTag}>\n`);
             }
         });
     
-        // 4. Try to embed favicon
+        // 6. Try to embed favicon
         let iconEl = files.find(_ => _.rel && ~_.rel.indexOf('icon') && _.url);
         if (iconEl) {
             try {
@@ -89,7 +99,7 @@ namespace Content {
                     let el = `<link rel="shortcut icon" type="image/x-icon" href="${b64}"></link>\n`;
                     $(iconEl.el).replaceWith(el);
                 } else {
-                    console.log(chalk.yellow(`     Skipped favicon with protocol <data:...>`));
+                    console.log(chalk.gray(`  Skipped favicon with protocol <data:...>`));
                 }
             } catch(err) {
                 console.log(`Cnnnot load favicon: '${iconEl.url}'`, err);
@@ -104,15 +114,27 @@ namespace Content {
     
 } //namespace Content
 
-const options = {
+type ReplacePair = {
+    key: string;
+    to: string;
+}
+
+type Options = {
+    ADD_MISSING_FAVICON: boolean;
+    SUFFIX: string;
+    replace: ReplacePair[]
+}
+
+const options: Options = {
     ADD_MISSING_FAVICON: true,
     SUFFIX: '--single',
+    replace: [],
 };
 
 function processSingleHtml(filename: string): void {
     filename = path.resolve(filename);
     const  rootDir = path.dirname(filename);
-    const  newCnt = Content.createSolidHtmlContent(rootDir, filename, options.ADD_MISSING_FAVICON);
+    const  newCnt = Content.createSolidHtmlContent(rootDir, filename, options.ADD_MISSING_FAVICON, options.replace);
     const  destName = path.join(rootDir, `${path.basename(filename, '.html')}${options.SUFFIX}${path.extname(filename)}`);
     fs.writeFileSync(destName, newCnt);
 }
@@ -120,11 +142,14 @@ function processSingleHtml(filename: string): void {
 export function main() {
     const args = minimist(process.argv.slice(2), {
         boolean: ['nofav'],
+        string: ['replace'],
         alias: {
             n: 'nofav',
+            r: 'replace'
         },
         default: {
-            mofav: false,
+            nofav: false,
+            replace: [],
         }
     });
 
@@ -146,6 +171,16 @@ export function main() {
     if (args.nofav) {
         options.ADD_MISSING_FAVICON = false;
     }
+
+    args.replace.forEach((_: string) => {
+        const pair = _.split('=');
+        if (pair.length === 2) {
+            options.replace.push({key: pair[0], to: pair[1]});
+        } else {
+            console.log(chalk.yellow(`invalid pair" '${_}'`));
+            process.exit(2);
+        }
+    });
 
     //return;
 

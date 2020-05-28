@@ -18,7 +18,7 @@
                 //"./tests/2/", "--suffix", "_COMBINED"
                 //"--path", "./tests/3/index.html", "--deffavicon", "false"
                 //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change"
-                "--suffix", "ok", "--nofav", "./tests/4"
+                "--suffix", "ok", "--nofav", "./tests/4", "--replace", "src/core/vue.js=src/core/vue.min.js", "--r", "b=c"
             ],
             "console": "integratedTerminal"
         }
