@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\dist\\html-single.js",
+            "program": "${workspaceFolder}\\build\\index.js",
             "args": [
                 //"--path", "./tests/2/"
                 //"--path", "./tests/2/index.html"
@@ -19,7 +19,8 @@
                 //"--path", "./tests/3/index.html", "--deffavicon", "false"
                 //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change"
                 "./tests/4"
-            ]
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }
