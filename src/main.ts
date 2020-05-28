@@ -57,13 +57,15 @@ namespace Content {
         });
 
         console.log(chalk.green(`File ${filename}`));
-        console.log(chalk.green(`  Local links ${files.length} of ${allFiles.length} total`));
+        console.log(chalk.gray(`  Links: local ${files.length} of ${allFiles.length} total`));
 
-        // 3. Remap files
-        files.forEach((_: Item) => {
-            //replace
+        // 3. Remap file names
+        files.forEach((file: Item) => {
+            replace.forEach((pair: ReplacePair) => {
+                file.url = file.url.replace(pair.key, pair.to);
+            });
         });
-    
+        
         // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
         files.forEach((_: Item) => {
             try {
@@ -139,10 +141,25 @@ function processSingleHtml(filename: string): void {
     fs.writeFileSync(destName, newCnt);
 }
 
+function help() {
+    const helpText = 
+`
+gluehtml is utility to glue .js and .css local files into HTML.
+
+Run: gluehtml htmlFile | folder
+
+Options:
+    --suffix - string to add to the new file
+    --nofav - not include default favicon if missing
+    --replace or -r - following string in format: a=b to replace a with b
+`;
+    console.log(helpText);
+}
+
 export function main() {
     const args = minimist(process.argv.slice(2), {
         boolean: ['nofav'],
-        string: ['replace'],
+        string: ['replace', 'suffix'],
         alias: {
             n: 'nofav',
             r: 'replace'
@@ -158,8 +175,7 @@ export function main() {
     let target = args.path || args['_'][0];
 
     if (!target || !fs.existsSync(target)) {
-        console.log(chalk.yellow(`gluehtml is utility to glue .js and .css local files into HTML`));
-        console.log(chalk.yellow(`Run: gluehtml htmlFile | folder`));
+        help();
         console.log(chalk.yellow(`No files to glue.`));
         process.exit(1);
     }
@@ -177,6 +193,7 @@ export function main() {
         if (pair.length === 2) {
             options.replace.push({key: pair[0], to: pair[1]});
         } else {
+            help();
             console.log(chalk.yellow(`invalid pair" '${_}'`));
             process.exit(2);
         }
