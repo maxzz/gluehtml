@@ -12,7 +12,9 @@
     "keywords": [
         "HTML",
         "single",
-        "page"
+        "page",
+        "typescript",
+        "cheerio"
     ],
     "scripts": {
         "dev": "parcel build src/index.ts --target node --no-minify",
@@ -31,11 +33,11 @@
         "fs-extra": "^8.1.0",
         "minimist": "^1.2.5",
         "ts-loader": "^6.2.1",
-        "typescript": "^3.7.2"
+        "typescript": "^3.9.3"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/maxzz/gluehtml"
+        "url": "git+https://github.com/maxzz/gluehtml.git"
     },
     "bugs": {
         "url": "https://github.com/maxzz/gluehtml/issues"
