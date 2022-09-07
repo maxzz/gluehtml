@@ -25,7 +25,7 @@ function processSingleHtml(filename: string): void {
     fs.writeFileSync(destName, newCnt);
 }
 
-export async function main() {
+export function main() {
     const target = getArguments();
     //return;
 
@@ -52,9 +52,3 @@ export async function main() {
 
     console.log(chalk.green('Done'));
 }
-
-main().catch(async (error) => {
-    error.args && help();
-    const msg = chalk[error.args ? 'yellow' : 'red'](`\n${error.message}`);
-    await exitProcess(1, `${notes.buildMessage()}${msg}`);
-});
