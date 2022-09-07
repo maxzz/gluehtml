@@ -31,7 +31,7 @@ namespace Content {
         const tagSCRIPT = 'script';
     
         type Item = {
-            el: CheerioElement;
+            el: cheerio.Element;
             url: string;
             htmlTag: string;
             rel?: string;
@@ -40,7 +40,7 @@ namespace Content {
         
         const allFiles: Item[] = [];
     
-        $('link').each((idx: number, el: CheerioElement) => {
+        $('link').each((idx: number, el: cheerio.TagElement) => {
             el.attribs.href && allFiles.push({
                 el: el,
                 url: el.attribs.href,
@@ -49,7 +49,7 @@ namespace Content {
             });
         });
         
-        $('script').each((idx: number, el: CheerioElement) => {
+        $('script').each((idx: number, el: cheerio.TagElement) => {
             el.attribs.src && allFiles.push({
                 el: el,
                 url: el.attribs.src,
