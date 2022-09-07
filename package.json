@@ -9,6 +9,14 @@
     "files": [
         "dist/**.*"
     ],
+    "targets": {
+        "default": {
+            "includeNodeModules": true
+        }
+    },
+    "engines": {
+        "node": ">=14"
+    },
     "keywords": [
         "HTML",
         "single",
@@ -18,22 +26,23 @@
     ],
     "scripts": {
         "dev": "parcel build src/index.ts --target node --no-minify",
-        "build-ts": "parcel build src/main.ts --target node --bundle-node-modules --no-source-maps",
+        "build-ts": "parcel build src/main.ts --no-source-maps",
         "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
         "prepublish": "yarn build"
     },
-    "dependencies": {},
-    "devDependencies": {
-        "@types/cheerio": "^0.22.14",
-        "@types/fs-extra": "^8.0.1",
-        "@types/minimist": "^1.2.0",
-        "@types/node": "^12.12.11",
+    "dependencies": {
         "chalk": "^4.0.0",
         "cheerio": "^1.0.0-rc.3",
         "fs-extra": "^8.1.0",
-        "minimist": "^1.2.5",
+        "minimist": "1.2.6"
+    },
+    "devDependencies": {
+        "@types/cheerio": "0.22.31",
+        "@types/fs-extra": "^8.0.1",
+        "@types/minimist": "1.2.2",
+        "@types/node": "^12.12.11",
         "ts-loader": "^6.2.1",
-        "typescript": "^3.9.3"
+        "typescript": "4.8.2"
     },
     "repository": {
         "type": "git",
