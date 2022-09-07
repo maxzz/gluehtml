@@ -4,10 +4,14 @@ import chalk from 'chalk';
 import { runOptions } from './utils/app-types';
 import { getArguments } from './utils/app-arguments';
 import { Content } from './utils/app-content';
+import { exitProcess } from './utils/utils-errors';
+import { help } from './utils/app-help';
+import { notes } from './utils/app-notes';
 
 function processSingleHtml(filename: string): void {
     filename = path.resolve(filename);
     const rootDir = path.dirname(filename);
+
     const newCnt = Content.createSolidHtmlContent({
         rootDir,
         filename,
@@ -15,11 +19,13 @@ function processSingleHtml(filename: string): void {
         replace: runOptions.replace,
         keepmaps: runOptions.keepmaps
     });
+
     const destName = path.join(rootDir, `${path.basename(filename, '.html')}${runOptions.suffix}${path.extname(filename)}`);
+
     fs.writeFileSync(destName, newCnt);
 }
 
-export function main() {
+export async function main() {
     const target = getArguments();
     //return;
 
@@ -46,3 +52,9 @@ export function main() {
 
     console.log(chalk.green('Done'));
 }
+
+main().catch(async (error) => {
+    error.args && help();
+    const msg = chalk[error.args ? 'yellow' : 'red'](`\n${error.message}`);
+    await exitProcess(1, `${notes.buildMessage()}${msg}`);
+});
