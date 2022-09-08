@@ -17,7 +17,7 @@ function isLoadable(item: Item): boolean {
     let canbe = true;
     if (item.el.tagName === 'link') {
         const rel = item.rel?.trim().toLowerCase() || '';
-        canbe = !!rel.match(/stylesheet/); // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
+        canbe = !!rel.match(/(?:stylesheet|modulepreload)/); // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
     }
     return canbe && !item.url?.match(/^https?|^data:/);
 }
@@ -85,9 +85,25 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
     // 5. Replace links with loaded files content.
     files.forEach((item: Item) => {
         if (item.cnt) {
-            const tag = item.el.tagName === 'link' ? 'style' : item.el.tagName === 'script' ? 'script' : '';
-            console.log(`tag <${item.el.tagName}> ${JSON.stringify(item.el.attribs)}`);
-            $(item.el).replaceWith(`\n<${tag}>\n${item.cnt}\n</${tag}>\n`);
+            const orgTag = item.el.tagName;
+            const orgRel = item.el.attribs?.rel || '';
+            if (orgTag === 'link') {
+                if (orgRel === 'stylesheet') {
+                    const tag = 'style';
+                    $(item.el).replaceWith(`\n<${tag}>\n${item.cnt}\n</${tag}>\n`);
+                } else if (orgRel === 'modulepreload') {
+                    const tag = 'script';
+                    $(item.el).replaceWith(`\n<${tag} type="module">\n${item.cnt}\n</${tag}>\n`);
+                } else {
+                    console.log(chalk.yellow(`skip tag ${orgTag}`));
+                }
+            } else if (orgTag === 'script') {
+                const module = item.el.attribs?.type ? ` type="${item.el.attribs.type}"` : '';
+                const tag = 'script';
+                $(item.el).replaceWith(`\n<${tag}${module}>\n${item.cnt}\n</${tag}>\n`);
+            } else {
+                console.log(chalk.yellow(`skip tag ${orgTag}`));
+            }
         }
     });
 }
