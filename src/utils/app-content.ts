@@ -10,11 +10,16 @@ type Item = {
     url: string;            // element url
     rel?: string;           // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
     cnt?: string;           // file content
-    isLocal?: boolean;      // is file local or remote
+    isLoadable?: boolean;   // is file local and can be embedded (i.e. not: image, svg (except favicon), font, js module)
 };
 
-function isLocalUrl(item: Item) {
-    return !item.url?.match(/^https?|^data:/);
+function isLoadable(item: Item): boolean {
+    let canbe = true;
+    if (item.el.tagName === 'link') {
+        const rel = item.rel?.trim().toLowerCase() || '';
+        canbe = !!rel.match(/stylesheet/); // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
+    }
+    return canbe && !item.url?.match(/^https?|^data:/);
 }
 
 export const indentLevel3 = '      ';
@@ -39,10 +44,10 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
         });
     });
 
-    allFiles.forEach((file) => file.isLocal = isLocalUrl(file));
+    allFiles.forEach((file) => file.isLoadable = isLoadable(file));
 
     // 2. Skip items to remote files
-    let files = allFiles.filter((file) => file.isLocal);
+    let files = allFiles.filter((file) => file.isLoadable);
 
     console.log(chalk.green(`\nHTML file: ${filename}`));
     console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
