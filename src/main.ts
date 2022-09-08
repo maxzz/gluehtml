@@ -21,9 +21,9 @@ function handleSingleHtml(fname: string): void {
     let destName = '';
 
     if (runOptions.output) {
-        const dir = path.dirname(runOptions.output);
+        const dir = runOptions.output;
         fs.mkdirSync(dir, { recursive: true });
-        destName = runOptions.output;
+        destName = path.join(runOptions.output, path.basename(fname));
     } else {
         const base = osStuff.fnameWoExt(path.basename(fname));
         const ext = path.extname(fname);
