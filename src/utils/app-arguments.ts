@@ -28,8 +28,8 @@ export function getArguments(): string {
 
     if (!target || !fs.existsSync(target)) {
         help();
-        console.log(chalk.yellow(`No files to glue.`));
-        process.exit(1);
+        console.log(chalk.yellow(`No HTML files to glue in '${target}'\n`));
+        process.exit(0);
     }
 
     if (args.suffix && typeof args.suffix === 'string') {

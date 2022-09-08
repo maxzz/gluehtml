@@ -6,9 +6,8 @@ export const { name: programName, version: programVersion } = cfg;
 
 export function help() {
     const helpText = 
+    // gluehtml is utility to glue .js and .css local files into HTML.
 `
-gluehtml is utility to glue .js and .css local files into HTML.
-
 Run: gluehtml htmlFile | folder
 
 Options:

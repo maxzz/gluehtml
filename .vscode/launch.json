@@ -16,6 +16,8 @@
                 //"--path", "./tests/2/",
                 //"--path", "./tests/2/", "--output", "C:/Y/w/1-node/1-utils/create-single-html/tests/2/new",
                 "--path", "./tests/2/", "--output", "./new",
+
+                //"--path", "qq",
                 
                 //"--path", "./tests/2/index.html",
                 //"./tests/2/", "--suffix", "_COMBINED",

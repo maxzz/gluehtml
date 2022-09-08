@@ -38,7 +38,7 @@ function handleSingleHtml(fname: string): void {
 }
 
 export function main() {
-    console.log(`${programName} utility for gluing js and css into html files. version ${programVersion}`);
+    console.log(`\n${chalk.cyan(programName)} utility for gluing js and css into html files. version ${programVersion}`);
 
     const target = getArguments();
     const fileNames = getFilenamesToProcess(target);
