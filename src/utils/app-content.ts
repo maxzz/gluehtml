@@ -52,7 +52,11 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
     console.log(chalk.green(`\nHTML file: ${filename}`));
     console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
     allFiles.forEach((file) => {
-        console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
+        const attrs = file.el.attribs ? Object.entries(file.el.attribs).map(([key, val]) => ` "${key}"="${val}"`).join('') : '';
+        
+        console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+        //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+        //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
     });
     console.log(chalk.gray(`  merging local file${files.length === 1 ? '' : 's'}:`));
 
@@ -84,26 +88,32 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
 
     // 5. Replace links with loaded files content.
     files.forEach((item: Item) => {
-        if (item.cnt) {
-            const orgTag = item.el.tagName;
-            const orgRel = item.el.attribs?.rel || '';
-            if (orgTag === 'link') {
-                if (orgRel === 'stylesheet') {
-                    const tag = 'style';
-                    $(item.el).replaceWith(`\n<${tag}>\n${item.cnt}\n</${tag}>\n`);
-                } else if (orgRel === 'modulepreload') {
-                    const tag = 'script';
-                    $(item.el).replaceWith(`\n<${tag} type="module">\n${item.cnt}\n</${tag}>\n`);
-                } else {
-                    console.log(chalk.yellow(`skip tag ${orgTag}`));
-                }
-            } else if (orgTag === 'script') {
-                const module = item.el.attribs?.type ? ` type="${item.el.attribs.type}"` : '';
+        if (!item.cnt) {
+            return;
+        }
+        const { el } = item;
+        const orgTag = el.tagName;
+        const orgRel = el.attribs?.rel || '';
+        let newElement = '';
+
+        if (orgTag === 'link') {
+            if (orgRel === 'stylesheet') {
+                const tag = 'style';
+                newElement = `\n<${tag}>\n${item.cnt}\n</${tag}>\n`;
+            } else if (orgRel === 'modulepreload') {
                 const tag = 'script';
-                $(item.el).replaceWith(`\n<${tag}${module}>\n${item.cnt}\n</${tag}>\n`);
-            } else {
-                console.log(chalk.yellow(`skip tag ${orgTag}`));
+                newElement = `\n<${tag} type="module">\n${item.cnt}\n</${tag}>\n`;
             }
+        } else if (orgTag === 'script') {
+            const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
+            const tag = 'script';
+            newElement = `\n<${tag}${module}>\n${item.cnt}\n</${tag}>\n`;
+        }
+
+        if (newElement) {
+            $(item.el).replaceWith(newElement);
+        } else {
+            console.log(chalk.yellow(`skip tag ${orgTag} generation`));
         }
     });
 }
