@@ -15,9 +15,9 @@ type Item = {
 
 function isLoadable(item: Item): boolean {
     let canbe = true;
-    if (item.el.tagName === 'link') {
+    if (item.el.tagName === 'link') { // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
         const rel = item.rel?.trim().toLowerCase() || '';
-        canbe = !!rel.match(/(?:stylesheet|modulepreload)/); // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
+        canbe = !!rel.match(/stylesheet/); // !!rel.match(/(?:stylesheet|modulepreload)/): for now just keep stylesheet only
     }
     return canbe && !item.url?.match(/^https?|^data:/);
 }
