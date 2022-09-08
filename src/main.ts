@@ -19,11 +19,12 @@ function handleSingleHtml(fname: string): void {
     });
 
     let destName = '';
+    const destDir = path.dirname(fname);
 
     if (runOptions.output) {
-        const dir = runOptions.output;
+        const dir = path.resolve(destDir, runOptions.output);
         fs.mkdirSync(dir, { recursive: true });
-        destName = path.join(runOptions.output, path.basename(fname));
+        destName = path.join(dir, path.basename(fname));
     } else {
         const base = osStuff.fnameWoExt(path.basename(fname));
         const ext = path.extname(fname);

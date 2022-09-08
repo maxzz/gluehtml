@@ -12,7 +12,7 @@ gluehtml is utility to glue .js and .css local files into HTML.
 Run: gluehtml htmlFile | folder
 
 Options:
-    --output or -o     output path and filename; this will be folder name if multiple HTML files in the source folder
+    --output or -o     output folder
     --suffix           string to add to the new file
     --nofav            not include default favicon if missing (default false)
     --keepmaps or -k   don't remove source maps with patterns like: /*# sourceMappingURL=style.css.map */ (default false)

@@ -4,12 +4,11 @@ export type ReplacePair = {
 }
 
 export type InOptions = {
-    favicon: boolean;   // add missing favicon
-    suffix: string;
-    replace: ReplacePair[];
-    keepmaps: boolean;  // don't remove source-maps
-    output?: string;    // output filename path and filename
-    outputIsDir?: boolean; // true if multiple files in the source folder
+    favicon: boolean;       // add missing favicon
+    suffix: string;         // add suffix to filename
+    replace: ReplacePair[]; // pairs to replace inside document urls
+    keepmaps: boolean;      // don't remove source-maps
+    output?: string;        // output folder
 }
 
 export const runOptions: InOptions = {

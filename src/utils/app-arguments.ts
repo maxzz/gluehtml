@@ -38,7 +38,7 @@ export function getArguments(): string {
 
     runOptions.favicon = !args.nofav;
     runOptions.keepmaps = args.keepmaps;
-    runOptions.output = args.output && path.resolve(args.output);
+    runOptions.output = args.output;
     console.log('runOptions.output', runOptions.output);
 
     args.replace.forEach((line: string) => {
