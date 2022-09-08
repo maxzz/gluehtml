@@ -13,14 +13,18 @@
             ],
             "program": "${workspaceFolder}\\build\\index.js",
             "args": [
-                "--path", "./tests/2/",
+                //"--path", "./tests/2/",
+                
                 //"--path", "./tests/2/index.html",
                 //"./tests/2/", "--suffix", "_COMBINED",
                 //"--path", "./tests/3/index.html", "--deffavicon", "false",
                 //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change",
                 //"--suffix", "ok", "--nofav", "./tests/4", "--replace", "src/core/vue.js=src/core/vue.min.js", "--r", "11testcase012-dyna.css=testcase012-dyna.css",
+
+                "C:/Y/w/2-web/8-websites-ideas/4-react/delay-unmount/dist",
             ],
-            "console": "integratedTerminal"
+            // "console": "integratedTerminal",
+            "console": "externalTerminal",
         }
     ]
 }

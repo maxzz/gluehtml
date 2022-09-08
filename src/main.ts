@@ -1,50 +1,33 @@
 import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
+import { getArguments, getFilenamesToProcess } from './utils/app-arguments';
 import { runOptions } from './utils/app-types';
-import { getArguments } from './utils/app-arguments';
-import { Content } from './utils/app-content';
-import { exitProcess } from './utils/utils-errors';
-import { help } from './utils/app-help';
-import { notes } from './utils/app-notes';
+import { createSolidHtmlContent } from './utils/app-content';
 
-function processSingleHtml(filename: string): void {
-    filename = path.resolve(filename);
-    const rootDir = path.dirname(filename);
+function processSingleHtml(fname: string): void {
+    fname = path.resolve(fname);
+    const rootDir = path.dirname(fname);
 
-    const newCnt = Content.createSolidHtmlContent({
+    const newCnt = createSolidHtmlContent({
         rootDir,
-        filename,
+        filename: fname,
         addMissingFavicon: runOptions.favicon,
         replace: runOptions.replace,
         keepmaps: runOptions.keepmaps
     });
 
-    const destName = path.join(rootDir, `${path.basename(filename, '.html')}${runOptions.suffix}${path.extname(filename)}`);
+    const destName = path.join(rootDir, `${path.basename(fname, '.html')}${runOptions.suffix}${path.extname(fname)}`);
 
     fs.writeFileSync(destName, newCnt);
 }
 
 export function main() {
     const target = getArguments();
-    //return;
+    const fileNames = getFilenamesToProcess(target);
 
     try {
-        let src = path.normalize(target);
-        if (fs.statSync(src).isDirectory()) {
-            const fileNames: string[] =
-                fs.readdirSync(src)
-                    .filter(_ => path.extname(_) === '.html' && !~_.indexOf(runOptions.suffix))
-                    .map(_ => path.join(src, _));
-
-            if (fileNames.length) {
-                fileNames.forEach(processSingleHtml);
-            } else {
-                console.log(chalk.yellow(`  No HTML files found in folder "${src}"`));
-            }
-        } else {
-            processSingleHtml(src);
-        }
+        fileNames.forEach(processSingleHtml);
     } catch (error) {
         console.log(chalk.red(error));
         process.exit(2);

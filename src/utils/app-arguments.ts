@@ -38,16 +38,40 @@ export function getArguments(): string {
     runOptions.favicon = !args.nofav;
     runOptions.keepmaps = args.keepmaps;
 
-    args.replace.forEach((_: string) => {
-        const pair = _.split('=');
+    args.replace.forEach((line: string) => {
+        const pair = line.split('=');
         if (pair.length === 2) {
-            runOptions.replace.push({key: pair[0], to: pair[1]});
+            runOptions.replace.push({
+                key: pair[0],
+                to: pair[1],
+            });
         } else {
             help();
-            console.log(chalk.yellow(`invalid pair" '${_}'`));
+            console.log(chalk.yellow(`invalid pair" '${line}'`));
             process.exit(2);
         }
     });
 
     return target;
+}
+
+export function getFilenamesToProcess(target: string): string[] {
+    let fileNames: string[] = [];
+
+    let src = path.normalize(target);
+
+    if (fs.statSync(src).isDirectory()) {
+        fileNames =
+            fs.readdirSync(src)
+                .filter(fname => path.extname(fname) === '.html' && !~fname.indexOf(runOptions.suffix))
+                .map(fname => path.join(src, fname));
+    } else {
+        fileNames = [src];
+    }
+
+    if (!fileNames.length) {
+        console.log(chalk.yellow(`  No HTML files found in folder "${src}"`));
+    }
+
+    return fileNames;
 }

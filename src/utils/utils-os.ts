@@ -106,6 +106,13 @@ export namespace osStuff {
         return keys.length === 1 ? keys[0] : undefined;
     }
 
+    export function stripBOM(content: string): string {
+        // Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+        // because the buffer-to-string conversion in `fs.readFileSync()`
+        // translates it to FEFF, the UTF-16 BOM.
+        return content.charCodeAt(0) === 0xFEFF ? content.slice(1) : content;
+    }
+
     export function filterByExtension(fnames: string[], ext: string): string[] { // ext = '.dpm'
         return fnames.filter((item) => path.extname(item).toLowerCase() === ext);
     }
