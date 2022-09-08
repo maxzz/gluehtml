@@ -6,25 +6,33 @@ import { ReplacePair } from "./app-types";
 import { osStuff } from './utils-os';
 
 type Item = {
-    el: cheerio.Element;
-    url: string;
-    htmlTag: string;
-    rel?: string;
-    cnt?: string;
+    el: cheerio.Element;    // DOM element
+    url: string;            // element url
+    htmlTag: string;        // element tag name
+    rel?: string;           // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
+    cnt?: string;           // file content
 };
 
-const allFiles: Item[] = [];
+function isLocalUrl(_: Item) {
+    let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
+    isLocal && (isLocal = !_.url.match(/^https?|^data:/));
+    return isLocal;
+}
+
+const indentLevel3 = '      ';
 
 function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: ReplacePair[]): Item[] {
     const tagSTYLE = 'style';
     const tagSCRIPT = 'script';
+
+    const allFiles: Item[] = [];
 
     $('link').each((idx: number, el: cheerio.TagElement) => {
         el.attribs.href && allFiles.push({
             el: el,
             url: el.attribs.href,
             htmlTag: tagSTYLE,
-            rel: el.attribs.rel
+            rel: el.attribs.rel,
         });
     });
 
@@ -32,19 +40,19 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
         el.attribs.src && allFiles.push({
             el: el,
             url: el.attribs.src,
-            htmlTag: tagSCRIPT
+            htmlTag: tagSCRIPT,
         });
     });
 
     // 2. Skip remote files
-    let files = allFiles.filter((_: Item) => {
-        let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
-        isLocal && (isLocal = !_.url.match(/^https?|^data:/));
-        return isLocal;
-    });
+    let files = allFiles.filter(isLocalUrl);
 
-    console.log(chalk.green(`File ${filename}`));
-    console.log(chalk.gray(`  Links: local ${files.length} of ${allFiles.length} total`));
+    console.log(chalk.green(`\nHTML file: ${filename}`));
+    console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
+    allFiles.forEach((file) => {
+        console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
+    });
+    console.log(chalk.gray(`  merging local file${files.length === 1 ? '' : 's'}:`));
 
     // 3. Remap file names
     files.forEach((file: Item) => {
@@ -56,27 +64,26 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
     return files;
 }
 
-function step_LoadContentAndEmbed($: cheerio.Root, files: Item[], rootDir: string) {
+function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: string) {
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
-    files.forEach((_: Item) => {
+    files.forEach((item: Item) => {
         try {
-            const fname = path.join(rootDir, _.url);
-            console.log(chalk.gray(`  Processing: ${fname}`));
-
+            const fname = path.join(rootDir, item.url);
             if (fs.existsSync(fname)) {
-                _.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString());
+                console.log(chalk.gray(`${indentLevel3}${chalk.cyan(fname)}`));
+                item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString());
             } else {
-                console.log(chalk.yellow(`     Missing: ${fname}`));
+                console.log(chalk.yellow(`${indentLevel3}${fname} - missing local file`));
             }
         } catch (error) {
-            console.log(chalk.red(`  Failed to read: '${_.url}'\n   ${error}`));
+            console.log(chalk.red(`${indentLevel3}${item.url} - failed to load\n   ${error}`));
         }
     });
 
     // 5. Replace links with content.
-    files.forEach((_: Item) => {
-        if (_.cnt) {
-            $(_.el).replaceWith(`\n<${_.htmlTag}>\n${_.cnt}\n</${_.htmlTag}>\n`);
+    files.forEach((item: Item) => {
+        if (item.cnt) {
+            $(item.el).replaceWith(`\n<${item.htmlTag}>\n${item.cnt}\n</${item.htmlTag}>\n`);
         }
     });
 }
@@ -118,7 +125,7 @@ function step_loadAndParseHtml(filename: string): cheerio.Root {
     let htmlAsStr = '';
 
     try {
-        htmlAsStr = osStuff.stripBOM(fs.readFileSync(filename).toString());    
+        htmlAsStr = osStuff.stripBOM(fs.readFileSync(filename).toString());
     } catch (error) {
         console.log(chalk.red(`cannot read file:\n${filename}`));
         process.exit(3);
@@ -145,7 +152,7 @@ export function createSolidHtmlContent(options: createSolidHtmlContentParams): s
 
     let $ = step_loadAndParseHtml(filename);
     const files = step_GetDocumentLinks($, filename, replacePairs);
-    step_LoadContentAndEmbed($, files, rootDir);
+    step_LoadLinksContentAndEmbed($, files, rootDir);
     step_EmbedIcon($, files, rootDir, addMissingFavicon);
 
     let cnt = $.html();
