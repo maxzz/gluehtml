@@ -15,7 +15,8 @@
             "args": [
                 //"--path", "./tests/2/",
                 //"--path", "./tests/2/", "--output", "C:/Y/w/1-node/1-utils/create-single-html/tests/2/new",
-                "--path", "./tests/2/", "--output", "./new",
+                //"--path", "./tests/2/", "--output", "./new",
+                "--path", "C:/Y/w/2-web/8-websites-ideas/4-react/dropzone/dist/",
 
                 //"--path", "qq",
                 

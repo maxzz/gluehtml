@@ -6,17 +6,15 @@ import { ReplacePair } from "./app-types";
 import { osStuff } from './utils-os';
 
 type Item = {
-    el: cheerio.Element;    // DOM element
+    el: cheerio.TagElement; // DOM element
     url: string;            // element url
-    htmlTag: string;        // element tag name
     rel?: string;           // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
     cnt?: string;           // file content
+    isLocal?: boolean;      // is file local or remote
 };
 
 function isLocalUrl(item: Item) {
-    let isLocal: boolean | number = !item.rel || ~item.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
-    isLocal && (isLocal = !item.url.match(/^https?|^data:/));
-    return isLocal;
+    return !item.url?.match(/^https?|^data:/);
 }
 
 export const indentLevel3 = '      ';
@@ -25,14 +23,11 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
     const allFiles: Item[] = [];
 
     // 1. Scan document
-    const tagSTYLE = 'style';
-    const tagSCRIPT = 'script';
 
     $('link').each((idx: number, el: cheerio.TagElement) => {
         el.attribs.href && allFiles.push({
             el: el,
             url: el.attribs.href,
-            htmlTag: tagSTYLE,
             rel: el.attribs.rel,
         });
     });
@@ -41,12 +36,13 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
         el.attribs.src && allFiles.push({
             el: el,
             url: el.attribs.src,
-            htmlTag: tagSCRIPT,
         });
     });
 
+    allFiles.forEach((file) => file.isLocal = isLocalUrl(file));
+
     // 2. Skip items to remote files
-    let files = allFiles.filter(isLocalUrl);
+    let files = allFiles.filter((file) => file.isLocal);
 
     console.log(chalk.green(`\nHTML file: ${filename}`));
     console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
@@ -84,7 +80,9 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
     // 5. Replace links with loaded files content.
     files.forEach((item: Item) => {
         if (item.cnt) {
-            $(item.el).replaceWith(`\n<${item.htmlTag}>\n${item.cnt}\n</${item.htmlTag}>\n`);
+            const tag = item.el.tagName === 'link' ? 'style' : item.el.tagName === 'script' ? 'script' : '';
+            console.log(`tag <${item.el.tagName}> ${JSON.stringify(item.el.attribs)}`);
+            $(item.el).replaceWith(`\n<${tag}>\n${item.cnt}\n</${tag}>\n`);
         }
     });
 }

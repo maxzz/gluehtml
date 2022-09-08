@@ -52,3 +52,6 @@ export function main() {
 
     console.log(chalk.green('\nAll done'));
 }
+
+//TODO: dynamic react imports and fonts: if they are not referenced then should be copied separately (or ?)
+//TODO: if file not specified, check for index.html in current folder
