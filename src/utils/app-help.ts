@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 let cfg = require('../../package.json');
 
-export const { name: programName } = cfg;
+export const { name: programName, version: programVersion } = cfg;
 
 export function help() {
     const helpText = 

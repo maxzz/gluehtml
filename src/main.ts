@@ -5,6 +5,7 @@ import { getArguments, getFilenamesToProcess } from './utils/app-arguments';
 import { runOptions } from './utils/app-types';
 import { createSolidHtmlContent } from './utils/app-content';
 import { osStuff } from './utils/utils-os';
+import { programName, programVersion } from './utils/app-help';
 
 function handleSingleHtml(fname: string): void {
     fname = path.resolve(fname);
@@ -37,6 +38,8 @@ function handleSingleHtml(fname: string): void {
 }
 
 export function main() {
+    console.log(`${programName} utility for gluing js and css into html files. version ${programVersion}`);
+
     const target = getArguments();
     const fileNames = getFilenamesToProcess(target);
 
