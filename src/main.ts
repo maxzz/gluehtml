@@ -4,8 +4,9 @@ import chalk from 'chalk';
 import { getArguments, getFilenamesToProcess } from './utils/app-arguments';
 import { runOptions } from './utils/app-types';
 import { createSolidHtmlContent } from './utils/app-content';
+import { osStuff } from './utils/utils-os';
 
-function processSingleHtml(fname: string): void {
+function handleSingleHtml(fname: string): void {
     fname = path.resolve(fname);
     const rootDir = path.dirname(fname);
 
@@ -17,9 +18,21 @@ function processSingleHtml(fname: string): void {
         keepmaps: runOptions.keepmaps
     });
 
-    const destName = path.join(rootDir, `${path.basename(fname, '.html')}${runOptions.suffix}${path.extname(fname)}`);
+    let destName = '';
+
+    if (runOptions.output) {
+        const dir = path.dirname(runOptions.output);
+        fs.mkdirSync(dir, { recursive: true });
+        destName = runOptions.output;
+    } else {
+        const base = osStuff.fnameWoExt(path.basename(fname));
+        const ext = path.extname(fname);
+        destName = path.join(rootDir, `${base}${runOptions.suffix}${ext}`);
+    }
 
     fs.writeFileSync(destName, newCnt);
+
+    console.log(chalk.gray(`  new file saved to: ${destName}`));
 }
 
 export function main() {
@@ -27,11 +40,11 @@ export function main() {
     const fileNames = getFilenamesToProcess(target);
 
     try {
-        fileNames.forEach(processSingleHtml);
+        fileNames.forEach(handleSingleHtml);
     } catch (error) {
         console.log(chalk.red(error));
         process.exit(2);
     }
 
-    console.log(chalk.green('Done'));
+    console.log(chalk.green('\nAll done'));
 }

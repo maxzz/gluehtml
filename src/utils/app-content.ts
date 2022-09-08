@@ -13,19 +13,20 @@ type Item = {
     cnt?: string;           // file content
 };
 
-function isLocalUrl(_: Item) {
-    let isLocal: boolean | number = !_.rel || ~_.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
-    isLocal && (isLocal = !_.url.match(/^https?|^data:/));
+function isLocalUrl(item: Item) {
+    let isLocal: boolean | number = !item.rel || ~item.rel.trim().toLowerCase().indexOf('stylesheet'); // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
+    isLocal && (isLocal = !item.url.match(/^https?|^data:/));
     return isLocal;
 }
 
-const indentLevel3 = '      ';
+export const indentLevel3 = '      ';
 
 function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: ReplacePair[]): Item[] {
+    const allFiles: Item[] = [];
+
+    // 1. Scan document
     const tagSTYLE = 'style';
     const tagSCRIPT = 'script';
-
-    const allFiles: Item[] = [];
 
     $('link').each((idx: number, el: cheerio.TagElement) => {
         el.attribs.href && allFiles.push({
@@ -44,7 +45,7 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
         });
     });
 
-    // 2. Skip remote files
+    // 2. Skip items to remote files
     let files = allFiles.filter(isLocalUrl);
 
     console.log(chalk.green(`\nHTML file: ${filename}`));
@@ -80,7 +81,7 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
         }
     });
 
-    // 5. Replace links with content.
+    // 5. Replace links with loaded files content.
     files.forEach((item: Item) => {
         if (item.cnt) {
             $(item.el).replaceWith(`\n<${item.htmlTag}>\n${item.cnt}\n</${item.htmlTag}>\n`);
@@ -109,10 +110,10 @@ function step_EmbedIcon($: cheerio.Root, files: Item[], rootDir: string, addMiss
                 const el = `<link rel="shortcut icon" type="image/x-icon" href="${b64}"></link>\n`;
                 $(iconEl.el).replaceWith(el);
             } else {
-                console.log(chalk.gray(`  Skipped favicon with protocol <data:...>`));
+                console.log(chalk.gray(`${indentLevel3}Skipped favicon with protocol <data:...>`));
             }
         } catch (err) {
-            console.log(`Cnnnot load favicon: '${iconEl.url}'`, err);
+            console.log(`${indentLevel3}Cannot load favicon: '${iconEl.url}'`, err);
         }
     } else if (addMissingFavicon) {
         //let el = `<link rel="shortcut icon" type="image/x-icon" href="${DEF_FAVICON}"></link>\n`;

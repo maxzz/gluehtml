@@ -8,11 +8,12 @@ import { help } from './app-help';
 export function getArguments(): string {
     const args = minimist(process.argv.slice(2), {
         boolean: ['nofav', 'keepmaps'],
-        string: ['replace', 'suffix'],
+        string: ['replace', 'suffix', 'output'],
         alias: {
             n: 'nofav',
             r: 'replace',
             k: 'keepmaps',
+            o: 'output',
         },
         default: {
             nofav: false,
@@ -37,6 +38,8 @@ export function getArguments(): string {
 
     runOptions.favicon = !args.nofav;
     runOptions.keepmaps = args.keepmaps;
+    runOptions.output = args.output && path.resolve(args.output);
+    console.log('runOptions.output', runOptions.output);
 
     args.replace.forEach((line: string) => {
         const pair = line.split('=');
