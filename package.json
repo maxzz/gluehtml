@@ -1,21 +1,25 @@
 {
     "name": "gluehtml",
-    "version": "0.2.5",
+    "version": "0.2.7",
     "license": "MIT",
     "author": "Max Zakharzhevskiy",
     "description": "Glue HTML local external files into solid HTML",
-    "main": "dist/cli.js",
     "bin": "dist/cli.js",
+    "source": "src/main.ts",
     "files": [
         "dist/**.*"
     ],
-    "targets": {
-        "default": {
-            "includeNodeModules": true
-        }
-    },
     "engines": {
         "node": ">=16"
+    },
+    "targets": {
+        "default": {
+            "includeNodeModules": true,
+            "source": "src/main.ts",
+            "distDir": "./dist",
+            "isLibrary": true,
+            "optimize": true
+        }
     },
     "keywords": [
         "HTML",
@@ -25,9 +29,9 @@
         "cheerio"
     ],
     "scripts": {
-        "dev": "parcel build src/index.ts --target node --no-optimize",
-        "build-ts": "parcel build src/cli.ts --no-source-maps --target default",
-        "build": "rm -rf dist && yarn build-ts",
+        "dev": "tsc -w",
+        "build-ts": "parcel build --no-source-maps",
+        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
         "prepublish": "yarn build"
     },
     "dependencies": {
