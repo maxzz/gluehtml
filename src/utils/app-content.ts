@@ -108,6 +108,11 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
             const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
             const tag = 'script';
             newElement = `\n\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;
+
+            // move script inside body tag
+            const thisEl = $(item.el);
+            thisEl.remove();
+            $('body').append(thisEl);
         }
 
         if (newElement) {
