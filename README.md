@@ -1,16 +1,23 @@
 [![npm version](https://badge.fury.io/js/gluehtml.svg)](https://badge.fury.io/js/gluehtml)
 
-# Overview
+#### Overview
 
 gluehtml packs HTML file includes into a single self-contained HTML file with no references to the local .js or .css files. The output can be used in some restricted systems or quickly copied to a different locations.
 
 ![](assets/preview.png)
 
-# Install
+#### Install
 
 ```bash
 yarn global add gluehtml
 ```
+
+#### Refs
+
+* [Vite build.polyfillModulePreload](https://vitejs.dev/config/build-options.html#build-polyfillmodulepreload)
+    * [ES Module Preloading & Integrity](https://guybedford.com/es-module-preloading-integrity#modulepreload-polyfill)
+        * [Preloading modules](https://developer.chrome.com/blog/modulepreload)
+
 
 <!-- 
     "scripts": {

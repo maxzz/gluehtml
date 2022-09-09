@@ -99,15 +99,15 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
         if (orgTag === 'link') {
             if (orgRel === 'stylesheet') {
                 const tag = 'style';
-                newElement = `\n\n    <${tag}>\n${item.cnt}\n    </${tag}>\n\n`;
+                newElement = `\n    <${tag}>\n${item.cnt}\n    </${tag}>\n\n`;
             } else if (orgRel === 'modulepreload') {
                 const tag = 'script';
-                newElement = `\n\n    <${tag} type="module">\n${item.cnt}\n    </${tag}>\n\n`;
+                newElement = `\n    <${tag} type="module">\n${item.cnt}\n    </${tag}>\n\n`;
             }
         } else if (orgTag === 'script') {
             const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
             const tag = 'script';
-            newElement = `\n\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;
+            newElement = `\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;
 
             // move script inside body tag
             const thisEl = $(item.el);
@@ -151,7 +151,7 @@ function step_EmbedIcon($: cheerio.Root, files: Item[], rootDir: string, addMiss
         }
     } else if (addMissingFavicon) {
         //let el = `<link rel="shortcut icon" type="image/x-icon" href="${DEF_FAVICON}"></link>\n`;
-        let el = `\n\n    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22-20 -20 140 140%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" >\n\n`;
+        let el = `\n    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22-20 -20 140 140%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" >\n`;
         $('head').append(el);
     }
 }
@@ -190,7 +190,7 @@ export function createSolidHtmlContent(options: createSolidHtmlContentParams): s
     step_LoadLinksContentAndEmbed($, files, rootDir);
     step_EmbedIcon($, files, rootDir, addMissingFavicon);
 
-    let cnt = $.html();
+    let cnt = $.html().replace(/<(html|head|\/html)/g, '\n<$1').replace(/<(body)/g, '\n<$1');
 
     if (!keepmaps) {
         cnt = cnt.replace(/\/\*#\s*sourceMappingURL=.+\.map\s*\*\//g, '');
