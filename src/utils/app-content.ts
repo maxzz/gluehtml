@@ -77,7 +77,7 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
             const fname = path.join(rootDir, item.url);
             if (fs.existsSync(fname)) {
                 console.log(chalk.gray(`${indentLevel3}${chalk.cyan(fname)}`));
-                item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString());
+                item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString()).trim();
             } else {
                 console.log(chalk.yellow(`${indentLevel3}${fname} - missing local file`));
             }
@@ -99,15 +99,15 @@ function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: 
         if (orgTag === 'link') {
             if (orgRel === 'stylesheet') {
                 const tag = 'style';
-                newElement = `\n<${tag}>\n${item.cnt}\n</${tag}>\n`;
+                newElement = `\n\n    <${tag}>\n${item.cnt}\n    </${tag}>\n\n`;
             } else if (orgRel === 'modulepreload') {
                 const tag = 'script';
-                newElement = `\n<${tag} type="module">\n${item.cnt}\n</${tag}>\n`;
+                newElement = `\n\n    <${tag} type="module">\n${item.cnt}\n    </${tag}>\n\n`;
             }
         } else if (orgTag === 'script') {
             const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
             const tag = 'script';
-            newElement = `\n<${tag}${module}>\n${item.cnt}\n</${tag}>\n`;
+            newElement = `\n\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;
         }
 
         if (newElement) {
@@ -146,7 +146,7 @@ function step_EmbedIcon($: cheerio.Root, files: Item[], rootDir: string, addMiss
         }
     } else if (addMissingFavicon) {
         //let el = `<link rel="shortcut icon" type="image/x-icon" href="${DEF_FAVICON}"></link>\n`;
-        let el = `<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22-20 -20 140 140%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">\n`;
+        let el = `\n\n    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22-20 -20 140 140%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" >\n\n`;
         $('head').append(el);
     }
 }
