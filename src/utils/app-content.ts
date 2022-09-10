@@ -54,14 +54,14 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
         console.log(chalk.green(`\nHTML file: ${filename}`));
         console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
         allFiles.forEach((file) => {
-            const attrs = Object.entries(file.el.attribs || {}).map(([key, val]) => {
-                //return ` "${key}"="${val}"`
-                if (key === 'href' && val.match(/^data:/)) {
-                    return ` "${key}"="data:..."`;
-                }
-                return ` "${key}"="${val}"`;
-            }).filter(Boolean).join('');
-
+            const attrs = Object.entries(file.el.attribs || {})
+                .map(([key, val]) => (
+                    key === 'href' && val.match(/^data:/)
+                        ? ` "${key}"="data:..."`
+                        : val
+                            ? ` "${key}"="${val}"`
+                            : ` ${key}`
+                )).filter(Boolean).join('');
             console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
             //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
             //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
@@ -70,11 +70,9 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
     }
     printAllLinks();
 
-    // 3. Remap file names
+    // 3. Remap url name pairs
     files.forEach((file: Item) => {
-        replacePairs.forEach((pair: ReplacePair) => {
-            file.url = file.url.replace(pair.key, pair.to);
-        });
+        replacePairs.forEach(({key, to}: ReplacePair) => file.url = file.url.replace(key, to));
     });
 
     return files;
