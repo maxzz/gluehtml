@@ -17,6 +17,7 @@ yarn global add gluehtml
 * [Vite build.polyfillModulePreload](https://vitejs.dev/config/build-options.html#build-polyfillmodulepreload)
     * [ES Module Preloading & Integrity](https://guybedford.com/es-module-preloading-integrity#modulepreload-polyfill)
         * [Preloading modules](https://developer.chrome.com/blog/modulepreload)
+        * [es-module-shims](https://github.com/guybedford/es-module-shims)
 
 
 <!-- 
@@ -83,4 +84,13 @@ function isLocalUrl(item: Item) {
     
     return !item.url?.match(/^https?|^data:/);
 }
+-->
+
+<!--
+TODO:
+  <script>
+  /*<!--*/
+  ...
+  /*-- >*/
+  </script>
 -->

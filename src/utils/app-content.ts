@@ -49,16 +49,26 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
     // 2. Skip items to remote files
     let files = allFiles.filter((file) => file.isLoadable);
 
-    console.log(chalk.green(`\nHTML file: ${filename}`));
-    console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
-    allFiles.forEach((file) => {
-        const attrs = file.el.attribs ? Object.entries(file.el.attribs).map(([key, val]) => ` "${key}"="${val}"`).join('') : '';
-        
-        console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
-        //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
-        //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
-    });
-    console.log(chalk.gray(`  merging local file${files.length === 1 ? '' : 's'}:`));
+    // 2.1. Print links
+    function printAllLinks() {
+        console.log(chalk.green(`\nHTML file: ${filename}`));
+        console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
+        allFiles.forEach((file) => {
+            const attrs = Object.entries(file.el.attribs || {}).map(([key, val]) => {
+                //return ` "${key}"="${val}"`
+                if (key === 'href' && val.match(/^data:/)) {
+                    return ` "${key}"="data:..."`;
+                }
+                return ` "${key}"="${val}"`;
+            }).filter(Boolean).join('');
+
+            console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+            //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+            //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
+        });
+        console.log(chalk.gray(`  merging local file${files.length === 1 ? '' : 's'}:`));
+    }
+    printAllLinks();
 
     // 3. Remap file names
     files.forEach((file: Item) => {
