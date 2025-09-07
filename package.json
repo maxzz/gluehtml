@@ -4,11 +4,14 @@
     "license": "MIT",
     "author": "Max Zakharzhevskiy",
     "description": "Glue HTML local external files into solid HTML",
-    "bin": "dist/cli.js",
-    "source": "src/main.ts",
-    "files": [
-        "dist/**.*"
-    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maxzz/gluehtml.git"
+    },
+    "bugs": {
+        "url": "https://github.com/maxzz/gluehtml/issues"
+    },
+    "homepage": "https://github.com/maxzz/gluehtml/tree/master/#readme",
     "engines": {
         "node": ">=16"
     },
@@ -28,18 +31,11 @@
         "typescript",
         "cheerio"
     ],
-    "scripts": {
-        "dev": "tsc -w",
-        "build-ts": "parcel build --no-source-maps",
-        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
-        "prepublish": "yarn build"
-    },
-    "dependencies": {
-        "chalk": "^4.0.0",
-        "cheerio": "^1.0.0-rc.3",
-        "fs-extra": "^8.1.0",
-        "minimist": "1.2.6"
-    },
+    "bin": "dist/cli.js",
+    "source": "src/main.ts",
+    "files": [
+        "dist/**.*"
+    ],
     "devDependencies": {
         "@types/cheerio": "0.22.31",
         "@types/fs-extra": "^8.0.1",
@@ -48,12 +44,16 @@
         "ts-loader": "^6.2.1",
         "typescript": "4.8.2"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/maxzz/gluehtml.git"
+    "dependencies": {
+        "chalk": "^4.0.0",
+        "cheerio": "^1.0.0-rc.3",
+        "fs-extra": "^8.1.0",
+        "minimist": "1.2.6"
     },
-    "bugs": {
-        "url": "https://github.com/maxzz/gluehtml/issues"
-    },
-    "homepage": "https://github.com/maxzz/gluehtml/tree/master/#readme"
+    "scripts": {
+        "dev": "tsc -w",
+        "build-ts": "parcel build --no-source-maps",
+        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
+        "prepublish": "yarn build"
+    }
 }
