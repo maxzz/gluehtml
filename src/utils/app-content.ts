@@ -29,18 +29,20 @@ function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: 
 
     // 1. Scan document
 
-    $('link').each((idx: number, el: cheerio.TagElement) => {
-        el.attribs.href && allFiles.push({
-            el: el,
-            url: el.attribs.href,
-            rel: el.attribs.rel,
+    $('link').each((idx: number, el: cheerio.Element) => {
+        const elm = el as cheerio.TagElement;
+        elm.attribs.href && allFiles.push({
+            el: elm,
+            url: elm.attribs.href,
+            rel: elm.attribs.rel,
         });
     });
 
-    $('script').each((idx: number, el: cheerio.TagElement) => {
-        el.attribs.src && allFiles.push({
-            el: el,
-            url: el.attribs.src,
+    $('script').each((idx: number, el: cheerio.Element) => {
+        const elm = el as cheerio.TagElement;
+        elm.attribs.src && allFiles.push({
+            el: elm,
+            url: elm.attribs.src,
         });
     });
 
