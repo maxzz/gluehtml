@@ -1,17 +1,9 @@
 import path from "path";
 import fs from "fs-extra";
-import cheerio from "cheerio";
 import chalk from "chalk";
-import { ReplacePair } from "../utils/app-types";
-import { osStuff } from "../utils/utils-os";
-
-type Item = {
-    el: cheerio.TagElement; // DOM element
-    url: string;            // element url
-    rel?: string;           // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
-    cnt?: string;           // file content
-    isLoadable?: boolean;   // is file local and can be embedded (i.e. not: image, svg (except favicon), font, js module)
-};
+import cheerio from "cheerio";
+import { osStuff, ReplacePair } from "../utils";
+import { type Item } from "./9-types";
 
 function isLoadable(item: Item): boolean {
     let canbe = true;

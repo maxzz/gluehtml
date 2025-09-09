@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { programName } from "./app-help";
 import { exitProcess } from "./utils-errors";
 
-export namespace notes {
+export namespace Notes {
 
     let messages: string[] = []; // messages will be shown if any warnings happen.
     let processed: string[] = []; // processed will be shown if ${programName} processed more then one folder.
