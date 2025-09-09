@@ -1,11 +1,11 @@
 import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
-import { getArguments, getFilenamesToProcess } from './utils/app-arguments';
-import { runOptions } from './utils/app-types';
-import { createSolidHtmlContent } from './utils/app-content';
-import { osStuff } from './utils/utils-os';
-import { programName, programVersion } from './utils/app-help';
+import { getArguments, getFilenamesToProcess } from '../utils/app-arguments';
+import { runOptions } from '../utils/app-types';
+import { createSolidHtmlContent } from '../utils/app-content';
+import { osStuff } from '../utils/utils-os';
+import { programName, programVersion } from '../utils/app-help';
 
 function handleSingleHtml(fname: string): void {
     fname = path.resolve(fname);
