@@ -52,7 +52,7 @@
         "minimist": "1.2.8"
     },
     "scripts": {
-        "dev": "tsc -w",
+        "tsc": "tsc -w",
         "build": "tsup --entry.main src/index.ts --entry.cli src/cli.ts --format cjs --clean",
         "prepublish": "pnpm build"
     }
