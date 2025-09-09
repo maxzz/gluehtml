@@ -5,33 +5,48 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Program",
+            "name": "tsx",
             "type": "node",
             "request": "launch",
+            "runtimeExecutable": "tsx",
             "skipFiles": [
-                "<node_internals>/**"
+                "<node_internals>/**",
+                "${workspaceFolder}/node_modules/**"
             ],
             "program": "${workspaceFolder}\\build\\index.js",
             "args": [
-                //"--path", "./tests/2/",
-                //"--path", "./tests/2/", "--output", "C:/Y/w/1-node/1-utils/create-single-html/tests/2/new",
-                //"--path", "./tests/2/", "--output", "./new",
-                //"--path", "C:/Y/w/2-web/8-websites-ideas/4-react/dropzone/dist/",
+                "--path", "c:/users/max/desktop/test/1/",
+                "--out", "./tests/1/out/"
+            ]
+        },
+        // {
+        //     "name": "Launch Program",
+        //     "type": "node",
+        //     "request": "launch",
+        //     "skipFiles": [
+        //         "<node_internals>/**"
+        //     ],
+        //     "program": "${workspaceFolder}\\build\\index.js",
+        //     "args": [
+        //         //"--path", "./tests/2/",
+        //         //"--path", "./tests/2/", "--output", "C:/Y/w/1-node/1-utils/create-single-html/tests/2/new",
+        //         //"--path", "./tests/2/", "--output", "./new",
+        //         //"--path", "C:/Y/w/2-web/8-websites-ideas/4-react/dropzone/dist/",
                 
-                "--path", "C:/Y/w/2-web/0-dp/utils/pm-domain-credentials-switch/packages/template/dist/index.html",
+        //         "--path", "C:/Y/w/2-web/0-dp/utils/pm-domain-credentials-switch/packages/template/dist/index.html",
 
-                //"--path", "qq",
+        //         //"--path", "qq",
                 
-                //"--path", "./tests/2/index.html",
-                //"./tests/2/", "--suffix", "_COMBINED",
-                //"--path", "./tests/3/index.html", "--deffavicon", "false",
-                //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change",
-                //"--suffix", "ok", "--nofav", "./tests/4", "--replace", "src/core/vue.js=src/core/vue.min.js", "--r", "11testcase012-dyna.css=testcase012-dyna.css",
+        //         //"--path", "./tests/2/index.html",
+        //         //"./tests/2/", "--suffix", "_COMBINED",
+        //         //"--path", "./tests/3/index.html", "--deffavicon", "false",
+        //         //"E:/Y/W/2-web/7-my-webpages/dp-test-password-change",
+        //         //"--suffix", "ok", "--nofav", "./tests/4", "--replace", "src/core/vue.js=src/core/vue.min.js", "--r", "11testcase012-dyna.css=testcase012-dyna.css",
 
-                //"C:/Y/w/2-web/8-websites-ideas/4-react/delay-unmount/dist",
-            ],
-            // "console": "integratedTerminal",
-            "console": "externalTerminal",
-        }
+        //         //"C:/Y/w/2-web/8-websites-ideas/4-react/delay-unmount/dist",
+        //     ],
+        //     // "console": "integratedTerminal",
+        //     "console": "externalTerminal",
+        // }
     ]
 }
