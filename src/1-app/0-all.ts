@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import chalk from 'chalk';
 import { getArguments, getFilenamesToProcess } from '../2-args';
 import { runOptions } from '../utils/app-types';
-import { createSolidHtmlContent } from '../3-content/app-content';
+import { createSolidHtmlContent } from '../3-content';
 import { osStuff } from '../utils/utils-os';
 import { programName, programVersion } from '../utils/app-help';
 
