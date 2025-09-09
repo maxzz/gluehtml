@@ -1,1 +1,1 @@
-export * from './main';
+export * from './0-all';
