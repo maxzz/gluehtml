@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { programName, programVersion } from "../utils";
 import { getArguments, getFilenamesToProcess } from "../2-args";
-import { handleSingleHtml } from "./1-handle-single-html";
+import { handleFiles } from "./1-handle-single-html";
 
 export function main() {
     console.log(`\n${chalk.cyan(programName)} utility for gluing js and css into html files. version ${programVersion}`);
@@ -10,7 +10,7 @@ export function main() {
     const fileNames = getFilenamesToProcess(target);
 
     try {
-        fileNames.forEach(handleSingleHtml);
+        handleFiles(fileNames);
     } catch (error) {
         console.log(chalk.red(error));
         process.exit(2);

@@ -4,7 +4,11 @@ import chalk from "chalk";
 import { osStuff, runOptions } from "../utils";
 import { createSolidHtmlContent } from "../3-content";
 
-export function handleSingleHtml(fname: string): void {
+export function handleFiles(files: string[]): void {
+    files.forEach(handleSingleHtml);
+}
+
+function handleSingleHtml(fname: string): void {
     fname = path.resolve(fname);
     const rootDir = path.dirname(fname);
 
