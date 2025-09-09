@@ -1,8 +1,5 @@
-import path from "path";
-import fs from "fs-extra";
 import chalk from "chalk";
-import cheerio from "cheerio";
-import { osStuff, ReplacePair } from "../utils";
+import { type ReplacePair } from "../utils";
 import { type Item } from "./9-types";
 
 function isLoadable(item: Item): boolean {
