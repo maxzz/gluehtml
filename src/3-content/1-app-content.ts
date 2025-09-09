@@ -1,28 +1,8 @@
-import fs from "fs-extra";
-import chalk from "chalk";
-import cheerio from "cheerio";
-import { osStuff, ReplacePair } from "../utils";
+import { ReplacePair } from "../utils";
+import { step_loadAndParseHtml } from "./1-step-load-and-parse-html";
 import { step_GetDocumentLinks } from "./2-step-get-links";
 import { step_LoadLinksContentAndEmbed } from "./3-step-load-links";
 import { step_EmbedIcon } from "./4-step-embed-icon";
-
-function step_loadAndParseHtml(filename: string): cheerio.Root {
-    let htmlAsStr = '';
-
-    try {
-        htmlAsStr = osStuff.stripBOM(fs.readFileSync(filename).toString());
-    } catch (error) {
-        console.log(chalk.red(`cannot read file:\n${filename}`));
-        process.exit(3);
-    }
-
-    try {
-        return cheerio.load(htmlAsStr);
-    } catch (error) {
-        console.log(chalk.red(`cannot parse file as HTML:\n${filename}`));
-        process.exit(4);
-    }
-}
 
 type createSolidHtmlContentParams = {
     rootDir: string;
