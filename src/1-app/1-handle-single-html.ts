@@ -4,8 +4,8 @@ import chalk from "chalk";
 import { osStuff, runOptions } from "../utils";
 import { createSolidHtmlContent } from "../3-content";
 
-export function handleFiles(files: string[]): void {
-    files.forEach(handleSingleHtml);
+export function handleFiles(filenames: string[]): void {
+    filenames.forEach(handleSingleHtml);
 }
 
 function handleSingleHtml(fname: string): void {
