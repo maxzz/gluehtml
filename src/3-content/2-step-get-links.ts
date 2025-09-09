@@ -44,26 +44,31 @@ export function step_GetDocumentLinks($: cheerio.Root, filename: string, replace
     function printAllLinks() {
         console.log(chalk.green(`\nHTML file: ${filename}`));
         console.log(chalk.gray(`  document links ${allFiles.length} (${files.length} of them ${files.length === 1 ? 'is' : 'are'} local link${files.length === 1 ? '' : 's'}):`));
-        allFiles.forEach((file) => {
-            const attrs = Object.entries(file.el.attribs || {})
-                .map(([key, val]) => (
-                    key === 'href' && val.match(/^data:/)
-                        ? ` "${key}"="data:..."`
-                        : val
-                            ? ` "${key}"="${val}"`
-                            : ` ${key}`
-                )).filter(Boolean).join('');
-            console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
-            //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
-            //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
-        });
+        allFiles.forEach(
+            (file) => {
+                const attrs = Object.entries(file.el.attribs || {})
+                    .map(
+                        ([key, val]) => (
+                            key === 'href' && val.match(/^data:/)
+                                ? ` "${key}"="data:..."`
+                                : val
+                                    ? ` "${key}"="${val}"`
+                                    : ` ${key}`
+                        )
+                    )
+                    .filter(Boolean).join('');
+                console.log(`${indentLevel3}${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+                //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`<${file.el.tagName}${attrs}>`)}`);
+                //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
+            }
+        );
         console.log(chalk.gray(`  merging local file${files.length === 1 ? '' : 's'}:`));
     }
     printAllLinks();
 
     // 3. Remap url name pairs
     files.forEach((file: Item) => {
-        replacePairs.forEach(({key, to}: ReplacePair) => file.url = file.url.replace(key, to));
+        replacePairs.forEach(({ key, to }: ReplacePair) => file.url = file.url.replace(key, to));
     });
 
     return files;
