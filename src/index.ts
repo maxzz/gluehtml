@@ -1,3 +1,3 @@
-import { main } from './1-app/main'
+import { main } from './1-app';
 
 main();

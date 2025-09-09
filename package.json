@@ -53,8 +53,9 @@
     },
     "scripts": {
         "dev": "tsc -w",
-        "build-ts": "parcel build --no-source-maps",
-        "build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
-        "prepublish": "yarn build"
+        "build": "tsup --entry.main src/index.ts --entry.cli src/cli.ts --format cjs --clean",
+        "_build-ts": "parcel build --no-source-maps",
+        "_build": "rm -rf dist && yarn build-ts && cp src/cli.js dist",
+        "prepublish": "pnpm build"
     }
 }
