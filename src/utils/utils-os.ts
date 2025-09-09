@@ -1,6 +1,6 @@
-import path from 'path';
-import fs from 'fs';
-import chalk from 'chalk';
+import path from "path";
+import fs from "fs";
+import chalk from "chalk";
 
 export namespace osStuff {
 

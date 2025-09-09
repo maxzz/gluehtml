@@ -1,9 +1,9 @@
-import path from 'path';
-import fs from 'fs-extra';
-import cheerio from 'cheerio';
-import chalk from 'chalk';
+import path from "path";
+import fs from "fs-extra";
+import cheerio from "cheerio";
+import chalk from "chalk";
 import { ReplacePair } from "../utils/app-types";
-import { osStuff } from '../utils/utils-os';
+import { osStuff } from "../utils/utils-os";
 
 type Item = {
     el: cheerio.TagElement; // DOM element

@@ -1,1 +1,1 @@
-export * from './app-arguments';
+export * from "./app-arguments";

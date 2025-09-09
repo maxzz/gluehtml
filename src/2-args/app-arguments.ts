@@ -1,9 +1,9 @@
-import path from 'path';
-import fs from 'fs-extra';
-import minimist from 'minimist';
-import chalk from 'chalk';
-import { runOptions } from '../utils/app-types';
-import { help } from '../utils/app-help';
+import path from "path";
+import fs from "fs-extra";
+import minimist from "minimist";
+import chalk from "chalk";
+import { runOptions } from "../utils/app-types";
+import { help } from "../utils/app-help";
 
 export function getArguments(): string {
     const args = minimist(process.argv.slice(2), {
