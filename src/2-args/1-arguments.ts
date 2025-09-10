@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import minimist from "minimist";
 import chalk from "chalk";
 import { help } from "./3-help";
-import { runOptions } from "./9-types";
+import { runOptions } from "./9-types-arg";
 
 export function getArguments(): string {
     const args = minimist(process.argv.slice(2), {

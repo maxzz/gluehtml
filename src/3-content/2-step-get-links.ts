@@ -14,7 +14,7 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
                 el: elm,
                 tag: 'link',
                 url: elm.attribs.href,
-                rel: elm.attribs.rel,
+                rel: (elm.attribs.rel || '').trim().toLowerCase(),
             });
         }
     );
@@ -26,6 +26,7 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
                 el: elm,
                 tag: 'script',
                 url: elm.attribs.src,
+                rel: '',
             });
         }
     );
@@ -55,13 +56,12 @@ function filterDuplicates(localFiles: AlianItem[]): AlianItem[] {
     return unique;
 }
 
-function isLoadable(item: AlianItem): boolean {
+function isLoadable(alianItem: AlianItem): boolean {
     let canbe = true;
-    if (item.el.tagName === 'link') { // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
-        const rel = item.rel?.trim().toLowerCase() || '';
-        canbe = !!rel.match(/stylesheet/); // !!rel.match(/(?:stylesheet|modulepreload)/): for now just keep stylesheet only
+    if (alianItem.tag === 'link') {                     // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
+        canbe = !!alianItem.rel.match(/stylesheet/);    // !!rel.match(/(?:stylesheet|modulepreload)/): for now just keep stylesheet only
     }
-    return canbe && !item.url?.match(/^https?|^data:/);
+    return canbe && !alianItem.url?.match(/^https?|^data:/);
 }
 
 function isHrefDataProtocol(key: string, val: string): boolean {
