@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { runOptions } from "../utils";
+import { runOptions } from "../2-args";
 
 export function getHtmlFilenamesToProcess(target: string): string[] {
     let fileNames: string[] = [];

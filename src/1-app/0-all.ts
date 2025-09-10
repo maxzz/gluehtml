@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { programName, programVersion } from "../utils";
+import { programName, programVersion } from "../2-args";
 import { getArguments, getHtmlFilenamesToProcess } from "../2-args";
 import { handleFiles } from "./1-handle-single-html";
 

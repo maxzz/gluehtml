@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { programName } from "./app-help";
-import { exitProcess } from "./utils-errors";
+import { programName } from "../2-args";
+import { exitProcess } from "./2-utils-errors";
 
 export namespace Notes {
 
