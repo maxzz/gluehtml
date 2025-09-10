@@ -13,9 +13,9 @@
                 "<node_internals>/**",
                 "${workspaceFolder}/node_modules/**"
             ],
-            "program": "${workspaceFolder}\\build\\index.js",
+            "program": "${workspaceFolder}/src/index.ts",
             "args": [
-                "--path", "c:/users/max/desktop/test/1/",
+                "--path", "c:/users/maxzz/desktop/03.20.23/1",
                 "--out", "./tests/1/out/"
             ]
         },

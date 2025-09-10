@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import chalk from "chalk";
 import { runOptions } from "../utils";
 
-export function getFilenamesToProcess(target: string): string[] {
+export function getHtmlFilenamesToProcess(target: string): string[] {
     let fileNames: string[] = [];
 
     let src = path.normalize(target);
