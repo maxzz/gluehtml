@@ -1,16 +1,16 @@
 import chalk from "chalk";
 import { isAre, plural } from "../utils";
 import { indentLevel3, type ReplacePair } from "../2-args";
-import { type Item } from "./9-types";
+import { type AlianItem } from "./9-types";
 
-export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePair[], $: cheerio.Root): Item[] {
-    const allFiles: Item[] = [];
+export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePair[], $: cheerio.Root): AlianItem[] {
+    const alienFiles: AlianItem[] = [];
 
     // 1. Scan document
     $('link').each(
         (idx: number, el: cheerio.Element) => {
             const elm = el as cheerio.TagElement;
-            elm.attribs.href && allFiles.push({
+            elm.attribs.href && alienFiles.push({
                 el: elm,
                 url: elm.attribs.href,
                 rel: elm.attribs.rel,
@@ -21,24 +21,24 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
     $('script').each(
         (idx: number, el: cheerio.Element) => {
             const elm = el as cheerio.TagElement;
-            elm.attribs.src && allFiles.push({
+            elm.attribs.src && alienFiles.push({
                 el: elm,
                 url: elm.attribs.src,
             });
         }
     );
 
-    allFiles.forEach((file) => file.isLoadable = isLoadable(file));
+    alienFiles.forEach((file) => file.isLoadable = isLoadable(file));
 
     // 2. Skip items to remote files
-    let localFiles = allFiles.filter((file) => file.isLoadable);
+    let localFiles = alienFiles.filter((file) => file.isLoadable);
 
     // 2.1. Print links
-    printAllLinks(filename, allFiles, localFiles);
+    printAllLinks(filename, alienFiles, localFiles);
 
     // 3. Remap url name pairs defined by user through --replace option
     localFiles.forEach(
-        (file: Item) => {
+        (file: AlianItem) => {
             replacePairs.forEach(
                 ({ key, to }: ReplacePair) => file.url = file.url.replace(key, to)
             );
@@ -48,12 +48,12 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
     return localFiles;
 }
 
-function filterDuplicates(localFiles: Item[]): Item[] {
+function filterDuplicates(localFiles: AlianItem[]): AlianItem[] {
     const unique = localFiles.filter((item, index, self) => self.findIndex(t => t.url === item.url) === index);
     return unique;
 }
 
-function isLoadable(item: Item): boolean {
+function isLoadable(item: AlianItem): boolean {
     let canbe = true;
     if (item.el.tagName === 'link') { // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
         const rel = item.rel?.trim().toLowerCase() || '';
@@ -66,31 +66,27 @@ function isHrefDataProtocol(key: string, val: string): boolean {
     return key === 'href' && !!val.match(/^data:/);
 }
 
-function printAllLinks(filename: string, allFiles: Item[], localFiles: Item[]) {
+function printAllLinks(filename: string, alienFiles: AlianItem[], localFiles: AlianItem[]) {
     console.log(chalk.green(`\nProcessing: "${filename}"`));
     console.log(chalk.gray(
-        `  1. The document has ${allFiles.length} link${plural(allFiles.length)} ` +
+        `  1. The document has ${alienFiles.length} link${plural(alienFiles.length)} ` +
         `(${localFiles.length} of them ${isAre(localFiles.length)} local link${plural(localFiles.length)}):`));
 
-    allFiles.forEach(
+    alienFiles.forEach(
         (file, idx) => {
-            const attrs = Object.entries(file.el.attribs || {})
-                .map(
-                    ([key, val]) => (
-                        isHrefDataProtocol(key, val) // shorten data: urls
-                            ? ` "${key}"="data:..."`
-                            : val
-                                ? ` ${key}="${val}"`
-                                : ` ${key}`
+            const attrs =
+                Object.entries(file.el.attribs || {})
+                    .map(
+                        ([key, val]) => (
+                            isHrefDataProtocol(key, val) // shorten data: urls
+                                ? ` ${key}="data:..."`
+                                : ` ${key}${val ? `="${val}"` : ''}`
+                        )
                     )
-                )
-                .filter(Boolean)
-                .join('');
+                    .filter(Boolean)
+                    .join('');
             const line = `<${file.el.tagName}${attrs}>`;
             console.log(`${indentLevel3}${idx}: ${chalk.cyan(`${line}`)}`);
-
-            //console.log(`${indentLevel3}url: ${chalk.cyan(file.url)} ${chalk.cyan(`${text}`)}`);
-            //console.log(chalk.gray(`${indentLevel3}url: ${chalk.cyan(file.url)}`));
         }
     );
 

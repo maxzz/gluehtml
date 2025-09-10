@@ -1,14 +1,14 @@
 import path from "path";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { type Item } from "./9-types";
+import { type AlianItem } from "./9-types";
 import { indentLevel3 } from "../2-args";
 
 /**
  * 6. Try to embed favicon
  */
-export function step_EmbedIcon($: cheerio.Root, files: Item[], rootDir: string, addMissingFavicon: boolean) {
-    let iconEl = files.find(_ => _.rel && ~_.rel.indexOf('icon') && _.url);
+export function step_EmbedIcon($: cheerio.Root, alienFiles: AlianItem[], rootDir: string, addMissingFavicon: boolean) {
+    let iconEl = alienFiles.find((iconFile) => iconFile.rel && ~iconFile.rel.indexOf('icon') && iconFile.url);
     if (iconEl) {
         try {
             const isLocalFname = iconEl.url && !iconEl.url.match(/^https?|^data:/);
