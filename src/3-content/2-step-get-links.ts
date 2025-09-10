@@ -3,7 +3,7 @@ import { isAre, plural } from "../utils";
 import { indentLevel3, type ReplacePair } from "../2-args";
 import { type Item } from "./9-types";
 
-export function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: ReplacePair[]): Item[] {
+export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePair[], $: cheerio.Root): Item[] {
     const allFiles: Item[] = [];
 
     // 1. Scan document
@@ -48,6 +48,11 @@ export function step_GetDocumentLinks($: cheerio.Root, filename: string, replace
     return localFiles;
 }
 
+function filterDuplicates(localFiles: Item[]): Item[] {
+    const unique = localFiles.filter((item, index, self) => self.findIndex(t => t.url === item.url) === index);
+    return unique;
+}
+
 function isLoadable(item: Item): boolean {
     let canbe = true;
     if (item.el.tagName === 'link') { // skip 'rel=icon', rel="modulepreload", but allow =stylesheet and ="stylesheet"
@@ -55,6 +60,10 @@ function isLoadable(item: Item): boolean {
         canbe = !!rel.match(/stylesheet/); // !!rel.match(/(?:stylesheet|modulepreload)/): for now just keep stylesheet only
     }
     return canbe && !item.url?.match(/^https?|^data:/);
+}
+
+function isHrefDataProtocol(key: string, val: string): boolean {
+    return key === 'href' && !!val.match(/^data:/);
 }
 
 function printAllLinks(filename: string, allFiles: Item[], localFiles: Item[]) {
@@ -68,7 +77,7 @@ function printAllLinks(filename: string, allFiles: Item[], localFiles: Item[]) {
             const attrs = Object.entries(file.el.attribs || {})
                 .map(
                     ([key, val]) => (
-                        key === 'href' && val.match(/^data:/) // shorten data: urls
+                        isHrefDataProtocol(key, val) // shorten data: urls
                             ? ` "${key}"="data:..."`
                             : val
                                 ? ` ${key}="${val}"`

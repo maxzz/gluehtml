@@ -5,7 +5,7 @@ import { osStuff, plural } from "../utils";
 import { type Item } from "./9-types";
 import { indentLevel3 } from "../2-args";
 
-export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item[], rootDir: string) {
+export function step_LoadLinksContentAndEmbed(filesToLoad: Item[], rootDir: string, $: cheerio.Root) {
     console.log(chalk.gray(`  2. Embedding local file${plural(filesToLoad.length)}:`));
 
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).

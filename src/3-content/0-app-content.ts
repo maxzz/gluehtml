@@ -8,10 +8,10 @@ export function createSolidHtmlContent(options: createSolidHtmlContentParams): s
     const { rootDir, filename, addMissingFavicon, replace: replacePairs, keepmaps } = options;
 
     let $ = step_loadAndParseHtml(filename);
-    const files = step_GetDocumentLinks($, filename, replacePairs);
+    const files = step_GetDocumentLinks(filename, replacePairs, $);
 
     // Update cheerio root element with new content.
-    step_LoadLinksContentAndEmbed($, files, rootDir);
+    step_LoadLinksContentAndEmbed(files, rootDir, $);
     step_EmbedIcon($, files, rootDir, addMissingFavicon);
 
     // Create new HTML content and beautify it.
