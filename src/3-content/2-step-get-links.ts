@@ -12,6 +12,7 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
             const elm = el as cheerio.TagElement;
             elm.attribs.href && alienFiles.push({
                 el: elm,
+                tag: 'link',
                 url: elm.attribs.href,
                 rel: elm.attribs.rel,
             });
@@ -23,6 +24,7 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
             const elm = el as cheerio.TagElement;
             elm.attribs.src && alienFiles.push({
                 el: elm,
+                tag: 'script',
                 url: elm.attribs.src,
             });
         }

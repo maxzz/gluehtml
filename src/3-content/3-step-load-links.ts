@@ -11,7 +11,7 @@ export function step_LoadLinksContentAndEmbed(alienFiles: AlianItem[], rootDir: 
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
     console.log(chalk.gray(`  2. Embedding local file${plural(alienFiles.length)}:`));
     loadfiles(alienFiles, rootDir);
-    
+
     // 5. Replace cheerio links with loaded files content.
     console.log(chalk.gray(`  2. Embedding local stylesheet${plural(alienFiles.length)}:`));
     embedStylesheetsAndscripts(alienFiles, $);
@@ -42,24 +42,21 @@ function embedStylesheetsAndscripts(alienFiles: AlianItem[], $: cheerio.Root) {
                 return;
             }
 
-            const { el } = item;
-            const orgTag = el.tagName;
-            const orgRel = el.attribs?.rel || '';
+            const { el, tag } = item;
             let newElement = '';
 
-            if (orgTag === 'link') {
+            if (tag === 'link') {
+                const orgRel = el.attribs?.rel || '';
                 if (orgRel === 'stylesheet') {
-                    const tag = 'style';
-                    newElement = `\n    <${tag}>\n${item.cnt}\n    </${tag}>\n\n`;
-                } else if (orgRel === 'modulepreload') {
-                    const tag = 'script';
-                    newElement = `\n    <${tag} type="module">\n${item.cnt}\n    </${tag}>\n\n`;
+                    newElement = `\n    <style>\n${item.cnt}\n    </style>\n\n`;
+                }
+                else if (orgRel === 'modulepreload') {
+                    newElement = `\n    <script type="module">\n${item.cnt}\n    </script>\n\n`;
                 }
             }
-            else if (orgTag === 'script') {
+            else if (tag === 'script') {
                 const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
-                const tag = 'script';
-                newElement = `\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;
+                newElement = `\n    <script${module}>\n${item.cnt}\n    </script>\n\n`;
 
                 // move script inside body tag
                 const thisEl = $(item.el);
@@ -70,7 +67,7 @@ function embedStylesheetsAndscripts(alienFiles: AlianItem[], $: cheerio.Root) {
             if (newElement) {
                 $(item.el).replaceWith(newElement);
             } else {
-                console.log(chalk.yellow(`skip tag ${orgTag} generation`));
+                console.log(chalk.yellow(`skip tag ${tag} generation`));
             }
         }
     );
