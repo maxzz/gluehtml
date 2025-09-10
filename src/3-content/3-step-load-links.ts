@@ -6,9 +6,9 @@ import { type Item } from "./9-types";
 import { indentLevel3 } from "./2-step-get-links";
 
 export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item[], rootDir: string) {
+    console.log(chalk.gray(`  2. Embedding local file${plural(filesToLoad.length)}:`));
+
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
-    console.log(chalk.gray(`  2. Merging local file${plural(filesToLoad.length)}:`));
-    
     filesToLoad.forEach(
         (item: Item) => {
             try {
@@ -25,12 +25,13 @@ export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item
         }
     );
 
-    // 5. Replace links with loaded files content.
+    // 5. Replace cheerio links with loaded files content.
     filesToLoad.forEach(
         (item: Item) => {
             if (!item.cnt) {
                 return;
             }
+
             const { el } = item;
             const orgTag = el.tagName;
             const orgRel = el.attribs?.rel || '';
@@ -44,7 +45,8 @@ export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item
                     const tag = 'script';
                     newElement = `\n    <${tag} type="module">\n${item.cnt}\n    </${tag}>\n\n`;
                 }
-            } else if (orgTag === 'script') {
+            }
+            else if (orgTag === 'script') {
                 const module = el.attribs?.type ? ` type="${el.attribs.type}"` : '';
                 const tag = 'script';
                 newElement = `\n    <${tag}${module}>\n${item.cnt}\n    </${tag}>\n\n`;

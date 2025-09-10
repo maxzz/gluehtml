@@ -9,16 +9,23 @@ export function createSolidHtmlContent(options: createSolidHtmlContentParams): s
 
     let $ = step_loadAndParseHtml(filename);
     const files = step_GetDocumentLinks($, filename, replacePairs);
+
+    // Update cheerio root element with new content.
     step_LoadLinksContentAndEmbed($, files, rootDir);
     step_EmbedIcon($, files, rootDir, addMissingFavicon);
 
-    let cnt = $.html().replace(/<(html|head|\/html)/g, '\n<$1').replace(/<(body)/g, '\n<$1');
+    // Create new HTML content and beautify it.
+    let newCnt = $
+        .html()
+        .replace(/<(html|head|\/html)/g, '\n<$1') // add new lines before html, head and /html
+        .replace(/<(body)/g, '\n<$1');            // add new lines before body
 
+    // Remove source maps if not needed
     if (!keepmaps) {
-        cnt = cnt.replace(/\/\*#\s*sourceMappingURL=.+\.map\s*\*\//g, '');
+        newCnt = newCnt.replace(/\/\*#\s*sourceMappingURL=.+\.map\s*\*\//g, '');
     }
 
-    return cnt;
+    return newCnt;
 }
 
 type createSolidHtmlContentParams = {
