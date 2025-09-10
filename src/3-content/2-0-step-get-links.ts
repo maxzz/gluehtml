@@ -1,9 +1,10 @@
+import path from "path";
 import { type ReplacePair } from "../2-args";
 import { type AlianItem } from "./9-types";
 import { getDocumentAlienItems } from "./2-1-get-doc-alien-items";
 import { printAllLinks, printFilteredFiles } from "./2-2-print-alien-items";
 
-export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePair[], $: cheerio.Root): AlianItem[] {
+export function step_GetDocumentLinks(filename: string, rootDir: string, replacePairs: ReplacePair[], $: cheerio.Root): AlianItem[] {
     const alienFiles: AlianItem[] = getDocumentAlienItems($);
 
     alienFiles.forEach((file) => file.isLoadable = isLoadable(file));
@@ -13,7 +14,7 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
     printAllLinks(filename, alienFiles, localFiles);
 
     // 3. Filter duplicates
-    localFiles = filterDuplicates(localFiles);
+    localFiles = filterDuplicates(localFiles, rootDir);
     printFilteredFiles(localFiles);
 
     // 4. Remap url name pairs defined by user through --replace option
@@ -36,11 +37,12 @@ function isLoadable(alianItem: AlianItem): boolean {
     return canbe && !alianItem.url?.match(/^https?|^data:/);    // skip remote files and 'data:...' urls
 }
 
-function filterDuplicates(localFiles: AlianItem[]): AlianItem[] {
+function filterDuplicates(localFiles: AlianItem[], rootDir: string): AlianItem[] {
     const existing = new Set<string>();
     const unique = localFiles.reduce((acc, item) => {
-        if (!existing.has(item.url)) {
-            existing.add(item.url);
+        const fname = path.join(rootDir, item.url);
+        if (!existing.has(fname)) {
+            existing.add(fname);
             acc.push(item);
         } else {
 
