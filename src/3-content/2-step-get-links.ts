@@ -39,7 +39,11 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
     // 2.1. Print links
     printAllLinks(filename, alienFiles, localFiles);
 
-    // 3. Remap url name pairs defined by user through --replace option
+    // 3. Filter duplicates
+    localFiles = filterDuplicates(localFiles);
+    printAllLinks(filename, alienFiles, localFiles);
+
+    // 4. Remap url name pairs defined by user through --replace option
     localFiles.forEach(
         (file: AlianItem) => {
             replacePairs.forEach(
@@ -52,7 +56,14 @@ export function step_GetDocumentLinks(filename: string, replacePairs: ReplacePai
 }
 
 function filterDuplicates(localFiles: AlianItem[]): AlianItem[] {
-    const unique = localFiles.filter((item, index, self) => self.findIndex(t => t.url === item.url) === index);
+    const existing = new Set<string>();
+    const unique = localFiles.reduce((acc, item) => {
+        if (!existing.has(item.url)) {
+            existing.add(item.url);
+            acc.push(item);
+        }
+        return acc;
+    }, [] as AlianItem[]);
     return unique;
 }
 
