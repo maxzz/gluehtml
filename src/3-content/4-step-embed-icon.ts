@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { type Item } from "./9-types";
-import { indentLevel3 } from "./2-step-get-links";
+import { indentLevel3 } from "../2-args";
 
 /**
  * 6. Try to embed favicon

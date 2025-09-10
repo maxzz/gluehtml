@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import chalk from "chalk";
 import { osStuff, plural } from "../utils";
 import { type Item } from "./9-types";
-import { indentLevel3 } from "./2-step-get-links";
+import { indentLevel3 } from "../2-args";
 
 export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item[], rootDir: string) {
     console.log(chalk.gray(`  2. Embedding local file${plural(filesToLoad.length)}:`));

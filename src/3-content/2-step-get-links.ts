@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { isAre, plural } from "../utils";
-import { type ReplacePair } from "../2-args";
+import { indentLevel3, type ReplacePair } from "../2-args";
 import { type Item } from "./9-types";
 
 export function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: ReplacePair[]): Item[] {
@@ -45,8 +45,6 @@ export function step_GetDocumentLinks($: cheerio.Root, filename: string, replace
 
     return localFiles;
 }
-
-export const indentLevel3 = '      ';
 
 function isLoadable(item: Item): boolean {
     let canbe = true;
