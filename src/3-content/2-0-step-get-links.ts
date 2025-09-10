@@ -14,7 +14,7 @@ export function step_GetDocumentLinks(filename: string, rootDir: string, replace
     printAllLinks(filename, alienFiles, localFiles);
 
     // 3. Filter duplicates
-    localFiles = filterDuplicates(localFiles, rootDir);
+    markDuplicates(localFiles, rootDir);
     printFilteredFiles(localFiles);
 
     // 4. Remap url name pairs defined by user through --replace option
@@ -37,17 +37,16 @@ function isLoadable(alianItem: AlianItem): boolean {
     return canbe && !alianItem.url?.match(/^https?|^data:/);    // skip remote files and 'data:...' urls
 }
 
-function filterDuplicates(localFiles: AlianItem[], rootDir: string): AlianItem[] {
+function markDuplicates(localFiles: AlianItem[], rootDir: string) {
     const existing = new Set<string>();
-    const unique = localFiles.reduce((acc, item) => {
+
+    for (const item of localFiles) {
         const fname = path.join(rootDir, item.url);
-        if (!existing.has(fname)) {
-            existing.add(fname);
-            acc.push(item);
-        } else {
+        if (existing.has(fname)) {
             item.isDuplicate = true;
+        } else {
+            existing.add(fname);
         }
-        return acc;
-    }, [] as AlianItem[]);
-    return unique;
+    }
 }
+

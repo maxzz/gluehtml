@@ -8,16 +8,19 @@ import { indentLevel3 } from "../2-args";
 export function step_LoadLinksContentAndEmbed(alienFiles: AlianItem[], rootDir: string, $: cheerio.Root) {
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
     console.log(chalk.gray(`  2.1. Loading local file${plural(alienFiles.length)}:`));
-    loadfiles(alienFiles, rootDir);
+    loadLinkedFiles(alienFiles, rootDir);
 
     // 5. Replace cheerio links with loaded files content.
     console.log(chalk.gray(`  2.2. Embedding local stylesheet${plural(alienFiles.length)}:`));
     embedStylesheetsAndscripts(alienFiles, $);
 }
 
-function loadfiles(alienFiles: AlianItem[], rootDir: string) {
+function loadLinkedFiles(alienFiles: AlianItem[], rootDir: string) {
     alienFiles.forEach(
         (item: AlianItem, idx: number) => {
+            if (item.isDuplicate) {
+                return;
+            }
             try {
                 const fname = path.join(rootDir, item.url);
                 if (fs.existsSync(fname)) {
@@ -40,7 +43,7 @@ function embedStylesheetsAndscripts(alienFiles: AlianItem[], $: cheerio.Root) {
                 $(item.el).remove();
                 return;
             }
-            
+
             if (!item.cnt) {
                 return;
             }

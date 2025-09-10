@@ -1,5 +1,5 @@
 import { type ReplacePair } from "../2-args";
-import { step_loadAndParseHtml } from "./1-step-load-and-parse-html";
+import { step_loadAndParseHtml } from "./1-step-load-html-and-parse";
 import { step_GetDocumentLinks } from "./2-0-step-get-links";
 import { step_LoadLinksContentAndEmbed } from "./3-step-load-links";
 import { step_EmbedIcon } from "./4-step-embed-icon";

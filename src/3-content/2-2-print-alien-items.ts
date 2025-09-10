@@ -27,7 +27,7 @@ export function printAllLinks(filename: string, alienFiles: AlianItem[], localFi
 
 export function printFilteredFiles(localFiles: AlianItem[]) {
     console.log(chalk.gray(`  1.1. After filtering duplicates:`));
-    localFiles.forEach(printAlienItem);
+    localFiles.filter((item) => !item.isDuplicate).forEach(printAlienItem);
 }
 
 function printAlienItem(alienFile: AlianItem, idx: number) {
