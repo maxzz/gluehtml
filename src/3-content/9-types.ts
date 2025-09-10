@@ -5,4 +5,5 @@ export type AlianItem = {   // External file to load which is alian to the curre
     rel: string;            // skip 'rel=icon' but handle =stylesheet and ="stylesheet"
     cnt?: string;           // file content
     isLoadable?: boolean;   // is file local and can be embedded (i.e. not: image, svg (except favicon), font, js module)
+    isDuplicate: boolean;   // if file duplicate, then it will be removed from the document
 };

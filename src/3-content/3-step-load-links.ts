@@ -6,24 +6,22 @@ import { type AlianItem } from "./9-types";
 import { indentLevel3 } from "../2-args";
 
 export function step_LoadLinksContentAndEmbed(alienFiles: AlianItem[], rootDir: string, $: cheerio.Root) {
-    console.log(chalk.gray(`  2. Embedding local file${plural(alienFiles.length)}:`));
-
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
-    console.log(chalk.gray(`  2. Embedding local file${plural(alienFiles.length)}:`));
+    console.log(chalk.gray(`  2.1. Loading local file${plural(alienFiles.length)}:`));
     loadfiles(alienFiles, rootDir);
 
     // 5. Replace cheerio links with loaded files content.
-    console.log(chalk.gray(`  2. Embedding local stylesheet${plural(alienFiles.length)}:`));
+    console.log(chalk.gray(`  2.2. Embedding local stylesheet${plural(alienFiles.length)}:`));
     embedStylesheetsAndscripts(alienFiles, $);
 }
 
 function loadfiles(alienFiles: AlianItem[], rootDir: string) {
     alienFiles.forEach(
-        (item: AlianItem) => {
+        (item: AlianItem, idx: number) => {
             try {
                 const fname = path.join(rootDir, item.url);
                 if (fs.existsSync(fname)) {
-                    console.log(chalk.gray(`${indentLevel3}${chalk.cyan(fname)}`));
+                    console.log(chalk.gray(`${indentLevel3}${idx}: ${chalk.cyan(fname)}`));
                     item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString()).trim();
                 } else {
                     console.log(chalk.yellow(`${indentLevel3}${fname} - missing local file`));
