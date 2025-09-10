@@ -36,6 +36,11 @@ function loadfiles(alienFiles: AlianItem[], rootDir: string) {
 function embedStylesheetsAndscripts(alienFiles: AlianItem[], $: cheerio.Root) {
     alienFiles.forEach(
         (item: AlianItem) => {
+            if (item.isDuplicate) {
+                $(item.el).remove();
+                return;
+            }
+            
             if (!item.cnt) {
                 return;
             }
@@ -57,7 +62,7 @@ function embedStylesheetsAndscripts(alienFiles: AlianItem[], $: cheerio.Root) {
                 newElement = `\n    <script${module}>\n${item.cnt}\n    </script>\n\n`;
 
                 // move script inside body tag
-                const thisEl = $(item.el);
+                const thisEl = $(el);
                 thisEl.remove();
                 $('body').append(thisEl);
             }

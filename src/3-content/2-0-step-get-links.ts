@@ -45,7 +45,7 @@ function filterDuplicates(localFiles: AlianItem[], rootDir: string): AlianItem[]
             existing.add(fname);
             acc.push(item);
         } else {
-
+            item.isDuplicate = true;
         }
         return acc;
     }, [] as AlianItem[]);
