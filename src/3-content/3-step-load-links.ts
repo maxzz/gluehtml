@@ -1,13 +1,15 @@
 import path from "path";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { osStuff } from "../utils";
+import { osStuff, plural } from "../utils";
 import { type Item } from "./9-types";
 import { indentLevel3 } from "./2-step-get-links";
 
-export function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], rootDir: string) {
+export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item[], rootDir: string) {
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
-    files.forEach(
+    console.log(chalk.gray(`  2. Merging local file${plural(filesToLoad.length)}:`));
+    
+    filesToLoad.forEach(
         (item: Item) => {
             try {
                 const fname = path.join(rootDir, item.url);
@@ -24,7 +26,7 @@ export function step_LoadLinksContentAndEmbed($: cheerio.Root, files: Item[], ro
     );
 
     // 5. Replace links with loaded files content.
-    files.forEach(
+    filesToLoad.forEach(
         (item: Item) => {
             if (!item.cnt) {
                 return;

@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { type ReplacePair } from "../utils";
+import { isAre, plural, type ReplacePair } from "../utils";
 import { type Item } from "./9-types";
 
 export function step_GetDocumentLinks($: cheerio.Root, filename: string, replacePairs: ReplacePair[]): Item[] {
@@ -59,7 +59,7 @@ function isLoadable(item: Item): boolean {
 function printAllLinks(filename: string, allFiles: Item[], localFiles: Item[]) {
     console.log(chalk.green(`\nProcessing: "${filename}"`));
     console.log(chalk.gray(
-        `  The document has ${allFiles.length} link${plural(allFiles.length)} ` +
+        `  1. The document has ${allFiles.length} link${plural(allFiles.length)} ` +
         `(${localFiles.length} of them ${isAre(localFiles.length)} local link${plural(localFiles.length)}):`));
 
     allFiles.forEach(
@@ -97,13 +97,4 @@ function printAllLinks(filename: string, allFiles: Item[], localFiles: Item[]) {
         8: <script "src"="./js/index.js">
         9: <script "src"="./js/index.js">
      */
-    console.log(chalk.gray(`  merging local file${plural(localFiles.length)}:`));
-}
-
-function plural(n: number): string {
-    return n === 1 ? '' : 's';
-}
-
-function isAre(n: number): string {
-    return n === 1 ? 'is' : 'are';
 }
