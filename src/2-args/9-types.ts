@@ -1,4 +1,4 @@
-export type ReplacePair = {
+export type ReplacePair = { // replace url parts with new value; following string in format: a=b to replace a with b
     key: string;
     to: string;
 }

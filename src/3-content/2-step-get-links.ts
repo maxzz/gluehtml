@@ -36,10 +36,12 @@ export function step_GetDocumentLinks($: cheerio.Root, filename: string, replace
     // 2.1. Print links
     printAllLinks(filename, allFiles, localFiles);
 
-    // 3. Remap url name pairs
+    // 3. Remap url name pairs defined by user through --replace option
     localFiles.forEach(
         (file: Item) => {
-            replacePairs.forEach(({ key, to }: ReplacePair) => file.url = file.url.replace(key, to));
+            replacePairs.forEach(
+                ({ key, to }: ReplacePair) => file.url = file.url.replace(key, to)
+            );
         }
     );
 

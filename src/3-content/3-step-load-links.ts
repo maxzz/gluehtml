@@ -9,21 +9,7 @@ export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item
     console.log(chalk.gray(`  2. Embedding local file${plural(filesToLoad.length)}:`));
 
     // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
-    filesToLoad.forEach(
-        (item: Item) => {
-            try {
-                const fname = path.join(rootDir, item.url);
-                if (fs.existsSync(fname)) {
-                    console.log(chalk.gray(`${indentLevel3}${chalk.cyan(fname)}`));
-                    item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString()).trim();
-                } else {
-                    console.log(chalk.yellow(`${indentLevel3}${fname} - missing local file`));
-                }
-            } catch (error) {
-                console.log(chalk.red(`${indentLevel3}${item.url} - failed to load\n   ${error}`));
-            }
-        }
-    );
+    loadfiles(filesToLoad, rootDir);
 
     // 5. Replace cheerio links with loaded files content.
     filesToLoad.forEach(
@@ -61,6 +47,27 @@ export function step_LoadLinksContentAndEmbed($: cheerio.Root, filesToLoad: Item
                 $(item.el).replaceWith(newElement);
             } else {
                 console.log(chalk.yellow(`skip tag ${orgTag} generation`));
+            }
+        }
+    );
+}
+
+function loadfiles(filesToLoad: Item[], rootDir: string) {
+    console.log(chalk.gray(`  2. Embedding local file${plural(filesToLoad.length)}:`));
+
+    // 4. Load the content of externals relative to the HTML file location (server locations are ignored).
+    filesToLoad.forEach(
+        (item: Item) => {
+            try {
+                const fname = path.join(rootDir, item.url);
+                if (fs.existsSync(fname)) {
+                    console.log(chalk.gray(`${indentLevel3}${chalk.cyan(fname)}`));
+                    item.cnt = osStuff.stripBOM(fs.readFileSync(fname).toString()).trim();
+                } else {
+                    console.log(chalk.yellow(`${indentLevel3}${fname} - missing local file`));
+                }
+            } catch (error) {
+                console.log(chalk.red(`${indentLevel3}${item.url} - failed to load\n   ${error}`));
             }
         }
     );
