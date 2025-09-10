@@ -85,24 +85,7 @@ function printAllLinks(filename: string, alienFiles: AlianItem[], localFiles: Al
         `  1. The document has ${alienFiles.length} link${plural(alienFiles.length)} ` +
         `(${localFiles.length} of them ${isAre(localFiles.length)} local link${plural(localFiles.length)}):`));
 
-    alienFiles.forEach(
-        (file, idx) => {
-            const attrs =
-                Object.entries(file.el.attribs || {})
-                    .map(
-                        ([key, val]) => (
-                            isHrefDataProtocol(key, val) // shorten data: urls
-                                ? ` ${key}="data:..."`
-                                : ` ${key}${val ? `="${val}"` : ''}`
-                        )
-                    )
-                    .filter(Boolean)
-                    .join('');
-            const line = `<${file.el.tagName}${attrs}>`;
-            console.log(`${indentLevel3}${idx}: ${chalk.cyan(`${line}`)}`);
-        }
-    );
-
+    alienFiles.forEach(printAlienItem);
     /*
     The document has 10 links (10 of them are local links):
         0: <link "rel"="stylesheet" "href"="./css/style.css">
@@ -116,4 +99,20 @@ function printAllLinks(filename: string, alienFiles: AlianItem[], localFiles: Al
         8: <script "src"="./js/index.js">
         9: <script "src"="./js/index.js">
      */
+}
+
+function printAlienItem(alienFile: AlianItem, idx: number) {
+    const attrs =
+        Object.entries(alienFile.el.attribs || {})
+            .map(
+                ([key, val]) => (
+                    isHrefDataProtocol(key, val) // shorten data: urls
+                        ? ` ${key}="data:..."`
+                        : ` ${key}${val ? `="${val}"` : ''}`
+                )
+            )
+            .filter(Boolean)
+            .join('');
+    const line = `<${alienFile.el.tagName}${attrs}>`;
+    console.log(`${indentLevel3}${idx}: ${chalk.cyan(`${line}`)}`);
 }
