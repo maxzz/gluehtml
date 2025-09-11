@@ -40,7 +40,6 @@
         "@types/fs-extra": "^11.0.4",
         "@types/minimist": "1.2.5",
         "@types/node": "^24.3.1",
-        "html-format": "^1.1.7",
         "ts-loader": "^6.2.1",
         "tsup": "^8.5.0",
         "tsx": "^4.20.5",
@@ -51,12 +50,12 @@
         "chalk": "^5.6.0",
         "cheerio": "0.22.0",
         "fs-extra": "^11.3.1",
+        "html-format": "^1.1.7",
         "minimist": "1.2.8"
     },
     "scripts": {
         "tsc": "tsc -w",
         "build": "tsup --entry.gluehtml src/index.ts --entry.cli src/cli.ts --format cjs --clean",
-        "prepublish": "pnpm build",
         "to-npm": "pnpm build && pnpm publish --no-git-checks"
     }
 }
