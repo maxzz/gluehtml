@@ -1,9 +1,10 @@
 {
     "name": "gluehtml",
-    "version": "0.25.1",
+    "version": "0.25.3",
     "license": "MIT",
     "author": "Max Zakharzhevskiy",
     "description": "Glue HTML local external files into solid HTML",
+    "homepage": "https://github.com/maxzz/gluehtml/tree/master/#readme",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/maxzz/gluehtml.git"
@@ -11,18 +12,8 @@
     "bugs": {
         "url": "https://github.com/maxzz/gluehtml/issues"
     },
-    "homepage": "https://github.com/maxzz/gluehtml/tree/master/#readme",
     "engines": {
-        "node": ">=16"
-    },
-    "targets": {
-        "default": {
-            "includeNodeModules": true,
-            "source": "src/main.ts",
-            "distDir": "./dist",
-            "isLibrary": true,
-            "optimize": true
-        }
+        "node": ">=18"
     },
     "keywords": [
         "HTML",
@@ -31,8 +22,17 @@
         "typescript",
         "cheerio"
     ],
+    "targets": {
+        "default": {
+            "includeNodeModules": false,
+            "source": "src/index.ts",
+            "distDir": "./dist",
+            "isLibrary": false,
+            "optimize": true
+        }
+    },
     "bin": "dist/cli.js",
-    "source": "src/main.ts",
+    "source": "src/index.ts",
     "files": [
         "dist/**.*"
     ],
@@ -41,7 +41,6 @@
         "@types/minimist": "1.2.5",
         "@types/node": "^24.3.1",
         "html-format": "^1.1.7",
-        "prettier": "^3.6.2",
         "ts-loader": "^6.2.1",
         "tsup": "^8.5.0",
         "tsx": "^4.20.5",
@@ -56,7 +55,8 @@
     },
     "scripts": {
         "tsc": "tsc -w",
-        "build": "tsup --entry.main src/index.ts --entry.cli src/cli.ts --format cjs --clean",
-        "prepublish": "pnpm build"
+        "build": "tsup --entry.gluehtml src/index.ts --entry.cli src/cli.ts --format cjs --clean",
+        "prepublish": "pnpm build",
+        "to-npm": "pnpm build && pnpm publish --no-git-checks"
     }
 }
