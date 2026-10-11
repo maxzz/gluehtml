@@ -41,7 +41,7 @@ importers:
         version: 6.2.2(typescript@5.9.2)
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(tsx@4.20.5)(typescript@5.9.2)
+        version: 8.5.0(supports-color@5.5.0)(tsx@4.20.5)(typescript@5.9.2)
       tsx:
         specifier: ^4.20.5
         version: 4.20.5
@@ -388,8 +388,8 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
-  brace-expansion@2.0.2:
-    resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
+  brace-expansion@2.1.7:
+    resolution: {integrity: sha512-uZbew1NqdmPDTMJ8ah1y+b+9QEJrfkXFk3RcTQw3X0jW/xRUvFKsg1CfQdSYGdTbXZWExtU3J3ccxtnfw1Fi0g==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -1140,7 +1140,7 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  brace-expansion@2.0.2:
+  brace-expansion@2.1.7:
     dependencies:
       balanced-match: 1.0.2
 
@@ -1221,9 +1221,11 @@ snapshots:
 
   css-what@2.1.3: {}
 
-  debug@4.4.1:
+  debug@4.4.1(supports-color@5.5.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 5.5.0
 
   dom-serializer@0.1.1:
     dependencies:
@@ -1437,7 +1439,7 @@ snapshots:
 
   minimatch@9.0.5:
     dependencies:
-      brace-expansion: 2.0.2
+      brace-expansion: 2.1.7
 
   minimist@1.2.8: {}
 
@@ -1642,13 +1644,13 @@ snapshots:
       semver: 6.3.1
       typescript: 5.9.2
 
-  tsup@8.5.0(tsx@4.20.5)(typescript@5.9.2):
+  tsup@8.5.0(supports-color@5.5.0)(tsx@4.20.5)(typescript@5.9.2):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.9)
       cac: 6.7.14
       chokidar: 4.0.3
       consola: 3.4.2
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       esbuild: 0.25.9
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
